@@ -1,6 +1,13 @@
 \BOOKMARK [1][-]{section.1}{Supervised Learning}{}% 1
-\BOOKMARK [2][-]{subsection.1.1}{Linear Regression}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.1}{Linear Regression \(doc\)}{section.1}% 2
 \BOOKMARK [2][-]{subsection.1.2}{Perceptron Algorithm}{section.1}% 3
-\BOOKMARK [2][-]{subsection.1.3}{Decision Trees}{section.1}% 4
-\BOOKMARK [2][-]{subsection.1.4}{Naive Bayes}{section.1}% 5
-\BOOKMARK [2][-]{subsection.1.5}{Support Vector Machines \(SVMs\)}{section.1}% 6
+\BOOKMARK [2][-]{subsection.1.3}{Decision Trees \(doc\)}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{Naive Bayes \(doc\)}{section.1}% 5
+\BOOKMARK [2][-]{subsection.1.5}{Support Vector Machines \(SVMs\) \(doc\)}{section.1}% 6
+\BOOKMARK [2][-]{subsection.1.6}{Ensemble Methods \(doc\)}{section.1}% 7
+\BOOKMARK [2][-]{subsection.1.7}{Model Evaluation Metrics}{section.1}% 8
+\BOOKMARK [3][-]{subsubsection.1.7.1}{Classification Metrics \(formulas\)}{subsection.1.7}% 9
+\BOOKMARK [3][-]{subsubsection.1.7.2}{Regression Metrics}{subsection.1.7}% 10
+\BOOKMARK [2][-]{subsection.1.8}{Training and Tuning}{section.1}% 11
+\BOOKMARK [1][-]{section.2}{Deep Learning}{}% 12
+\BOOKMARK [2][-]{subsection.2.1}{Neural Networks}{section.2}% 13

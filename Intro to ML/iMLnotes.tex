@@ -60,7 +60,7 @@
 
 	\begin{spacing}{1.1}
 	\section{Supervised Learning}
-	\subsection{Linear Regression}
+	\subsection{Linear Regression \href{https://scikit-learn.org/stable/modules/linear_model.html}{(doc)}}
 	\textbf{Absolute Trick}: A point at $(p,q)$ with a line $y = w_1x + w_2$, we want to change the line to slowly move it towards the point. We want to do this by a small value $\alpha$ (learning rate), so our line become $\hat{y} = (w_1 + p\alpha)x + (w_2 + \alpha)$. \vspace*{2mm}\\
 	\textbf{Square Trick}: Similar to the absolute trick, but we consider the offset of the point from the y-axis ($p$) and from the line ($q-q'$) where $q'$ is the \textit{estimated} $y$ point and $q$ is the actual $y$ point. So our line becomes $\hat{y} = (w_1 + p(q-q')\alpha)x + (w_2 + (q-q')\alpha)$\vspace*{2mm}\\
 	\textbf{Mean Absolute Error}: the average of the sum of the distance between the estimate line value $\hat{y}$ and actual $y$ value, giving us the equation: $Error = \frac{1}{m} \sum_{i=1}^{m}|y-\hat{y}|$ \vspace*{2mm}\\
@@ -161,7 +161,7 @@
 				b -=learn_rate    
 		return W, b	\end{lstlisting} \vspace*{2mm}
 	
-	\subsection{Decision Trees}
+	\subsection{Decision Trees \href{https://scikit-learn.org/stable/modules/tree.html}{(doc)}}
 	\textbf{(Multiclass) Entropy}: $-\sum_{i=1}^np_i log_2(p_i)$ where $p_i$ is the probability for each class. Note that points with the same color will have zero entropy, so this is the ideal outcome for classification. \vspace*{2mm}\\
 	\textbf{Information Gain}: Tells us how well our data is being classified (in a range between 0 and 1). The lower the information gain, the worse our model is doing as separating the data. The higher the information gain, the better our model is performing at classification. We have the formula: \\$IG = Entropy(Parent) - \Big[\frac{m}{m+n}Entropy(Child_1)+\frac{n}{m+n}Entropy(Child_2)\Big]$ \vspace*{2mm}\\
 	\textbf{Important Hyperparameters for Decision Trees}: \vspace*{1mm} \\
@@ -220,7 +220,7 @@
 	# Train Acc: 0.8820224719101124, Test Acc: 0.8603351955307262 \end{lstlisting} \newpage
 %%%% PAGE 5 %%%%
 
-	\subsection{Naive Bayes}
+	\subsection{Naive Bayes \href{https://scikit-learn.org/stable/modules/naive_bayes.html}{(doc)}}
 	\textbf{Naive Bayes}: a supervised machine learning algorithm that can be trained to classify data into multi-class categories. The probabilistic model computes the conditional probabilities of the input features and assigns the probability distributions to each of possible classes. \vspace*{2mm}\\
 	\textbf{Bayes Theorem}: We have prior probabilities for a given problem, and after we know that event $B$ occurred, we can find the posterior probability with the formula $ P(A_j|B) = \frac{P(B|A_j)P(A_j)}{\sum P(B|A_i)P(A_i)}$\vspace*{2mm}\\
 	\textbf{Naive Assumption}: $P(A\cap B) = P(A)P(B)$ meaning that the two events are independent. We assume this to be true even if it is not the case. \vspace*{2mm}\\
@@ -269,7 +269,7 @@
 	print('F1 score: ', format(f1_score(y_test, predictions))) # 0.95604 \end{lstlisting} \newpage
 %%%% PAGE 6 %%%%
 
-	\subsection{Support Vector Machines (SVMs)}
+	\subsection{Support Vector Machines (SVMs) \href{https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}{(doc)}}
 	\textbf{Classification Error}: we have a line separating our data points into groups, $Wx+b = 0$, and we want to add two more lines called the \textit{margin}. The line above has equation $Wx+b = 1$ and the line below has equation $Wx+b = -1$. We then assign points error based on where they are in respect to the margin:
 	\begin{center}
 	\includegraphics[scale=.3]{SVM}
@@ -282,6 +282,261 @@
 	\textbf{Linear Kernel}: we separate our data using a linear line (doesn't work well when data is complicated).\vspace*{2mm}\\
 	\textbf{Polynomial Kernel}: we separate our data using circles, hyperbolas, parabolas, and many more boundaries by adding more dimensions to our data to classify it. The degree of the polynomial determines what kind of boundaries we can create.\vspace*{.5mm}\\
 	ex: (degree 2) $\mathbb{E}^2 \rightarrow \mathbb{E}^5: (x,y) \rightarrow(x,y,x^2,xy,y^2)$. We map our points (x,y) to a higher dimensions which allows us to create degree 2 functions. We then find a boundary hyperplane and map this back to a 2nd degree polynomial boundary (think of a paraboloid in 3D mapping back to a circle in 2D). \vspace*{2mm}\\
+	\textbf{RBF Kernel}: We build mountain ranges (radial basis functions) on top of our point to find boundaries to group the data. The plane that intersects the paraboloids is the projection that determine the boundaries. The $\gamma$ hyperparameter can be tuned to determine the width of the curve, with a small $\gamma$ giving us a wide curve and a large $\gamma$ giving us a narrow curve.
+	\begin{lstlisting}
+	from sklearn.svm import SVC
+	from sklearn.metrics import accuracy_score
+	
+	data = np.asarray(pd.read_csv('data.csv', header=None)) 
+	X = data[:,0:2] # features
+	y = data[:,2] # labels
+	
+	model = SVC(kernel='rbf', gamma=27).fit(X,y)
+	
+	y_pred = model.predict(X)
+	acc = accuracy_score(y, y_pred)
+	\end{lstlisting} \newpage
+%%%% PAGE 7 %%%%
+
+	\subsection{Ensemble Methods \href{https://scikit-learn.org/stable/modules/ensemble.html}{(doc)}}
+	\textbf{Bias}: when a model has high bias, this means that it doesn't do a good job of bending to the data. One example is linear regression, which fits a straight line no matter how the data is shaped (but has a low variance).\vspace*{2mm}\\
+	\textbf{Variance}: when a model has high variance, this means that it changes drastically to meet the needs of every point in our dataset. One example are decision trees, which will attempt to split every point into its own branch if possible (but has low bias).\vspace*{2mm}\\
+	\textbf{High Bias, Low Variance}: models tend to underfit data, as they are not flexible (linear models).\vspace*{2mm}\\
+	\textbf{High Variance, Low Bias}: models tend to overfit data, as they are too flexible (decision trees). \vspace*{2mm}\\
+	\textbf{Randomness}: introduction of randomness to high variance algorithms to combats the tendency of these algorithms to overfit the data. \vspace*{2mm}\\
+	\textbf{Bootstrap}:  sampling the data with replacement and fitting your algorithm to the sampled data. \vspace*{2mm}\\
+	\textbf{Boosting}: Random sampling with replacement over weighted data. \vspace*{2mm}\\
+	\textbf{Random Forests}: take a subset of the columns and build a decision tree from them, then repeat this process multiple times. We then use each tree to predict, and pick the most occurring outcome.\vspace*{2mm}\\
+	\textbf{Bagging}: take subsets of the data, create one-node decision trees to find a boundary for each subset, then take the overlap of the boundaries to determine the final boundary line (bootstrapping). \vspace*{2mm}\\
+	\textbf{AdaBoost}: we assign weights to each points, and we want to minimize the sum of the weights on the incorrectly classified points. We then increase the weights (by $\frac{\sum correct\, weights}{\sum incorrect\, weights}$) of the misclassified points and create a new boundary line. We continue this process for multiple models. \vspace*{.7mm}\\
+	Once we have our models, we assign weight to the models to determine the influence they have in our final boundary, which can be calculated by $weight = ln(\frac{\#\, correct}{\#\, incorrect})$
+	\begin{lstlisting}
+	# NOTE: we are using the testing and training data from the Naive Bayes
+	# section, so refer to that to see data preprocessing steps
+	
+	from sklearn.ensemble import AdaBoostClassifier
+	from sklearn.ensemble import BaggingClassifier
+	from sklearn.ensemble import RandomForestClassifier
+	from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+	
+	bag_model = BaggingClassifier(n_estimators=200).fit(training_data, y_train)
+	rf_model = RandomForestClassifier(n_estimators=200).fit(training_data, y_train)
+	ada_model = AdaBoostClassifier(n_estimators=300, learning_rate=0.2)
+	ada_model.fit(training_data, y_train)
+	
+	bag_ypred = bag_model.predict(testing_data)
+	rf_ypred = rf_model.predict(testing_data)
+	ada_ypred = ada_model.predict(testing_data)
+	
+	# General Format for printing evaluation metrics (scoring model)
+	print('Accuracy score: ', format(accuracy_score(y_true, preds)))
+	print('Precision score: ', format(precision_score(y_true, preds)))
+	print('Recall score: ', format(recall_score(y_true, preds)))
+	print('F1 score: ', format(f1_score(y_true, preds)))	
+	\end{lstlisting} \vspace*{3mm}
+	NOTE: the \textit{base\_estimator} parameter for AdaBoost and Bagging allows you to choose the weak leaner model to be used in the classification process.	\newpage
+%%%% PAGE 8 %%%%
+
+	\subsection{Model Evaluation Metrics}
+	\subsubsection{Classification Metrics (\href{https://en.wikipedia.org/wiki/Precision\_and\_recall\#Definition\_(classification\_context)}{formulas})}
+	\textbf{Confusion Matrix}: a table that tells us the True Positive, False Negatives, False Positive, and True Negatives (left to right, top to bottom).\vspace*{2mm}\\
+	\textbf{Error Types}: False Positives are classified as \textit{Type 1 Error}, False Negative are \textit{Type 2 Error}.\vspace*{2mm}\\
+	\textbf{Accuracy}: used to compare models, it tells us the proportion of observations we correctly labeled (don't use if classes are imbalanced).\vspace*{2mm}\\
+	\textbf{Precision}: focuses on \textit{predicted} positive values, helps determine if you are doing a good job of predicting the positive values, as compared to predicting negative values as positive. Avoiding false positives.  \vspace*{2mm}\\
+	\textbf{Recall}: focuses on the \textit{actual} positive values, determines if you are doing a good job of predicting the positive values without regard of how you are doing on the actual negative values. Avoiding false negatives. \vspace*{2mm}\\
+	\textbf{F1 Score}: the harmonic mean (less than regular mean), found by $2*\frac{Precision*Recall}{Precision+Recall}$ (care equally about both the positive and negative cases). \vspace*{2mm}\\
+	\textbf{$F_\beta$ Score}: If we want our model to focus more on precision than recall (such as spam filtering), we can use a smaller $\beta$. If we want our model to focus more on recall than precision (such as medical diagnosis), we can use a larger $\beta$. The formula is $F_\beta = (1+\beta^2) \frac{precision*recall}{\beta^2 * precision + recall}$\vspace*{2mm}\\
+	\textbf{ROC Curve \& AUC}: By finding different thresholds for our classification metrics, we can measure the area under the ROC curve. When the AUC is closer to 1, the better your model is performing.
+	\begin{lstlisting}
+	# Again, we are using the data from the Naive Bayes section, so refer
+	# back to that to see the data preprocessing steps
+	
+	from sklearn.naive_bayes import MultinomialNB
+	from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, 
+	                            fbeta_score
+	from sklearn.ensemble import BaggingClassifier, RandomForestClassifier, 
+	from sklearn.svm import SVC
+	
+	naive_bayes = MultinomialNB().fit(training_data, y_train)
+	bag_mod = BaggingClassifier(n_estimators=200).fit(training_data, y_train)
+	rf_mod = RandomForestClassifier(n_estimators=200).fit(training_data, y_train)
+	svm_mod = SVC().fit(training_data, y_train)
+	
+	nb_preds = naive_bayes.predict(testing_data)
+	bag_preds = bag_mod.predict(testing_data)
+	rf_preds = rf_mod.predict(testing_data)
+	svm_preds = svm_mod.predict(testing_data)
+	
+	def metric_scores(actual, preds, model, model_name):
+		print('Accuracy for ' + model_name + ' : {}'.format(accuracy_score(actual, preds)))
+		print('Precision ' + model_name + ' : {}'.format(precision_score(actual, preds)))
+		print('Recall for ' + model_name + ' : {}'.format(recall_score(actual, preds)))
+		print('F1 for ' + model_name + ' : {}'.format(f1_score(actual, preds)))
+		print('\n')
+		return None
+	
+	metric_scores(y_test, nb_preds, naive_bayes, 'Naive Bayes')
+	metric_scores(y_test, bag_preds, bag_mod, 'Bagging')
+	metric_scores(y_test, rf_preds, rf_mod, 'Random Forest')
+	metric_scores(y_test, svm_preds, svm_mod, 'SVM')
+	# Running this, Naive Bayes performed best for all expect precision (rf_model)
+	fbeta_score(y_test, nb_preds, beta=1) # same output as F1 score since beta=1 \end{lstlisting} \newpage
+%%%% PAGE 9 %%%%
+
+	\begin{lstlisting}
+	from itertools import cycle
+	from sklearn.metrics import roc_curve, auc, roc_auc_score
+	from scipy import interp
+	
+	def build_roc_auc(model, X_train, X_test, y_train, y_test):
+		y_preds = model.fit(X_train, y_train).predict_proba(X_test)
+		# Compute ROC curve and ROC area for each class
+		fpr = dict()
+		tpr = dict()
+		roc_auc = dict()
+		for i in range(len(y_test)):
+			fpr[i], tpr[i], _ = roc_curve(y_test, y_preds[:, 1])
+			roc_auc[i] = auc(fpr[i], tpr[i])
+		
+		# Compute micro-average ROC curve and ROC area
+		fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_preds[:, 1].ravel())
+		roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+		
+		plt.plot(fpr[2], tpr[2], color='darkorange', lw=2, 
+		         label='ROC curve (area = %0.2f)' % roc_auc[2])
+		plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+		plt.xlim([0.0, 1.0])
+		plt.ylim([0.0, 1.05])
+		plt.xlabel('False Positive Rate')
+		plt.ylabel('True Positive Rate')
+		plt.title('Receiver operating characteristic example')
+		plt.show();
+		
+		return roc_auc_score(y_test, np.round(y_preds[:, 1])) \end{lstlisting} \vspace*{1mm}
+	\subsubsection{Regression Metrics}
+	\textbf{Mean Absolute Error (MAE)}: a useful metric to optimize on when the value you are trying to predict follows a skewed distribution (not as much influence from outliers as MSE). The optimal value for this technique is the median value. \vspace*{2mm}\\
+	\textbf{Mean Squared Error (MSE)}: most used metric for optimization (impacted by outliers and skew), it is differentiable and can be used better for gradient descent. The optimal value is the mean. \vspace*{2mm}\\ 
+	\textbf{R2 Score}: interpreted as the `amount of variability' captured by a model. Minimizing MSE will maximize R2, which is good since we want this score to be as close to 1 as possible.
+	\begin{lstlisting}
+	# Import all regression models
+	from sklearn.linear_model import LinearRegression
+	from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor
+	from sklearn.tree import DecisionTreeRegressor
+	from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+	
+	def reg_metrics(actual, preds, model, model_name):
+		print('R2 ' + model_name + ' : {}'.format(r2_score(actual, preds)))
+		print('MAE ' + model_name + ' : {}'.format(mean_absolute_error(actual, preds)))
+		print('MSE ' + model_name + ' : {}'.format(mean_squared_error(actual, preds)))
+		print('\n')
+		return None	\end{lstlisting} \vspace*{2mm}
+	Using the Boston housing dataset, if were were to fit and predict on all of the models above, we would see that the RandomForestRegressor performs the best on all evaluation metrics. \newpage
+%%%% PAGE 10 %%%%
+
+	\subsection{Training and Tuning}
+	\textbf{Underfitting}: making our model too simple, leading to bad accuracy on the training and testing set (an error due to high bias). Does not generalize well to new data. \vspace*{2mm}\\
+	\textbf{Overfitting}: making our model too complicated, leading to higher training set accuracy but low testing set accuracy (an error due to high variance). Does not generalize well to new data. \vspace*{2mm}\\
+	\textbf{K-Fold Cross Validation}: splitting our data $k$ time into training and testing sets to train and evaluate our model on different data combinations, so we don't lose some of the data. \vspace*{2mm}\\
+	\textbf{Learning Curves}: In a model that is underfitting, the training and CV error converge at a high error. In a model that is overfitting, the training and CV error do not converge. In a good model, the training and CV error will converge at a low error point. \vspace*{2mm}\\
+	\textbf{Grid Search}: combines all specified combinations of hyperparameters to find the best model. We then pick the one with the highest F1 score as our model and use a testing set to verify.
+	\begin{lstlisting}
+	import pandas as pd
+	import numpy as np
+	from sklearn.datasets import load_diabetes
+	from sklearn.model_selection import train_test_split, RandomizedSearchCV
+	from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+	from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+	import matplotlib.pyplot as plt
+	from sklearn.svm import SVC
+	import seaborn as sns
+	sns.set(style="ticks")
+	
+	diabetes = pd.read_csv('diabetes.csv')
+	
+	# Data Analysis
+	diabetes.describe() # see summary statistics for each column
+	diabetes.isna().any() # (0) - find number of NA values (by column) 
+	diabetes['Outcome'].sum()/len(diabetes) # (0.35) - proportion of diabetes outcomes
+	diabetes['Age'].value_counts().hist() # right-skewed data
+	diabetes['Glucose'].hist() # approx normal distribution
+	sns.heatmap(diabetes.corr(), annot=True, cmap="YlGnBu"); # correlation heatmap
+	
+	y = diabetes['Outcome']
+	X = diabetes.drop(columns='Outcome', axis=1)
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
+	                                                    random_state=42)
+	
+	# Build a RandomForestClassifier and use RandomizedSeach to find best params
+	clf_rf = RandomForestClassifier()
+	
+	param_dist = {"max_depth": [3, None],
+				"n_estimators": list(range(10, 200)),
+				"max_features": list(range(1, X_test.shape[1]+1)),
+				"min_samples_split": list(range(2, 11)),
+				"min_samples_leaf": list(range(1, 11)),
+				"bootstrap": [True, False],
+				"criterion": ["gini", "entropy"]}
+	
+	random_search = RandomizedSearchCV(clf_rf, param_distributions=param_dist)
+	random_search.fit(X_train, y_train)
+	
+	rf_preds = random_search.best_estimator_.predict(X_test)
+	print('F1 Score: {}'.format(f1_score(y_test, rf_preds))) # 0.6847 \end{lstlisting} \newpage
+%%%% PAGE 11 %%%%
+
+	\begin{lstlisting}
+	# Build a AdaBoostClassifier and use RandomizedSeach to find best params
+	ada = AdaBoostClassifier()
+	
+	parameters = {'n_estimators': list(range(50, 275, 25)),
+			'learning_rate': [0.001, 0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 1, 2, 5, 10, 15]}
+
+	ada_random = RandomizedSearchCV(ada, param_distributions=parameters)
+	ada_random.fit(X_train, y_train)
+
+	ada_preds = ada_random.best_estimator_.predict(X_test)
+	print('F1 Score: {}'.format(f1_score(y_test, ada_preds))) # 0.6729
+	
+	# Plotting feature importance
+	features =  diabetes.columns[:-1]
+	importances = random_search.best_estimator_.feature_importances_
+	indices = np.argsort(importances)
+	
+	plt.title('Feature Importance (Random Forest Classifier)')
+	plt.barh(range(len(indices)), importances[indices], color='b', align='center')
+	plt.yticks(range(len(indices)), [features[i] for i in indices])
+	plt.xlabel('Relative Importance')
+	plt.show() # Glucose, BMI, and Age were the top 3 features \end{lstlisting} \vspace*{3mm}
+	Note that these features ranking were very similar to the heatmap that was made (except for pregnancies, which turned out to be the least influential feature). \vspace*{2mm}\\
+	In this case study, we looked at predicting diabetes for 768 patients.  There was a reasonable amount of class imbalance with just under 35\% of patients having diabetes.  There were no missing data, and initial looks at the data showed it would be difficult to separate patients with diabetes from those that did not have diabetes. \vspace*{2mm}\\
+	Two advanced modeling techniques were used to predict whether or not a patient has diabetes.  The most successful of these techniques proved to be the RandomForestClassifier, which had the following metrics: \\
+	Accuracy score for random forest : 0.7727272727272727\\
+	Precision score random forest : 0.6785714285714286\\
+	Recall score random forest : 0.6909090909090909\\
+	F1 score random forest : 0.6846846846846847\vspace*{1mm}\\
+	Based on the initial look at the data, it is unsurprising that Glucose, BMI, and Age were important in understanding if a patient has diabetes. It was surprising seeing that pregnancy looked to be correlated in the initial heatmap, but turned out to be the least important feature in our final model. This could have been due to its high correlation with the Age feature. \newpage
+%%%% PAGE 12 %%%%
+	
+	\section{Deep Learning}
+	\subsection{Neural Networks}
+	NOTE: refer back to Perceptron Algorithm section (1.2) for basic building blocks. \vspace*{2mm}\\
+	\textbf{Error Function}: tells us the distance we are from the points, assigning more weight to the misclassified points and less to the correctly classified points. This should be continuous (not discrete). \vspace*{2mm}\\
+	\textbf{Continuous Predictions}: we now want to classify points based on probability since we are working in the continuous world. Using the \textit{Sigmoid Function}, we classify all points with probability $<$ 0.5 as 0 and all points with probability $>$ 0.5 as 1. \vspace*{2mm}\\
+	\textbf{Sigmoid Function (Binary)}: we now classify points as $\hat{y} = \sigma(Wx+b)$. The formula is $\frac{1}{1+e^{-x}}$ and will gives us a probability, which we classify based on a boundary line of 0.5. \vspace*{2mm}\\
+	\textbf{Softmax Function (Multi-class)}: We apply the softmax function, $\frac{e^{Z_i}}{e^{Z_1}+...+e^{Z_n}}$, to all of the linear function scores ($Wx+b$) to find the probability for each class.
+	\begin{lstlisting}
+	def softmax(L):
+		# Takes a list of numbers and returns the softmax values for each
+		p_class = []
+		for z in L:
+			p_class.append(np.exp(z)/np.sum(np.exp(L)))
+		return p_class
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{One-Hot Encoding}: for labels, create a column for each label option and assign a 1 if it is the corresponding label, otherwise assign it a 0. In general, we will have $n$ columns for $n$ labels.\vspace*{2mm}\\
+	
+	
+	
+	
 	
 	
 	
