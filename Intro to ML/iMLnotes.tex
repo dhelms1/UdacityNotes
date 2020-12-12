@@ -533,14 +533,377 @@
 		return p_class
 	\end{lstlisting} \vspace*{2mm}
 	\textbf{One-Hot Encoding}: for labels, create a column for each label option and assign a 1 if it is the corresponding label, otherwise assign it a 0. In general, we will have $n$ columns for $n$ labels.\vspace*{2mm}\\
+	\textbf{Cross-Entropy}: we want to maximize our probabilities that each point is correctly classified, which will minimize the error function. We sum across all of our probabilities, taking the -log() of each. If our point probability is near 1, it will have a small value. If our probability is near 0, it will have a larger value. This means a good model will give us a low cross-entropy. Points that are correctly classified have small errors, and points that are misclassified will have large errors.	
+	\begin{lstlisting}
+	def cross_entropy(Y, P):
+		# Y are our labels, P is our probabilities
+		Y = np.float_(Y)
+		P = np.float_(P)
+		return -np.sum(Y*np.log(P) + (1-Y)*np.log(1-P))
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{Binary Cross-Entropy}: $E(W,b) = -\frac{1}{m} \sum_{i=1}^m y_i\,  ln(\hat{y}_i) + (1-y_i)ln(1-\hat{y}_i)$ where $\hat{y}_i = \sigma(Wx^{(i)}+b)$  \vspace*{2mm}\\
+	\textbf{Multi-Class Cross-Entropy}: $E(W,b) = -\frac{1}{m} \sum_{i=1}^m \sum_{j=1}^n y_{ij}\, ln(\hat{y}_{ij})$ where $\hat{y}_{ij} = \sigma(Wx^{(ij)} + b)$  \vspace*{2mm}\\
+	\textbf{Gradient Descent}: We want to minimize of size of $E(W,b)$ by taking steps downwards, which we can do by taking $\nabla E = [\frac{\partial E}{\partial w_1},..., \frac{\partial E}{\partial w_n}, \frac{\partial E}{\partial b}] = -(y-\hat{y})(x_1,...,x_n,1)$ and then taking a step in the direction $-\alpha\nabla E$ since we want to move down scaled by a learning rate $\alpha$. We then updated parameters as follows: $w_i' = w_i - \alpha \frac{\partial E}{\partial w_i} \implies w_i' = w_i + \alpha(y-\hat{y})x_i $ and $b' = b - \alpha \frac{\partial E}{\partial b} \implies b' = b + \alpha(y-\hat{y})$. We repeat this for a certain number of epochs until we minimize error. 
+	\begin{lstlisting}
+	# Activation (sigmoid) function
+	def sigmoid(x):
+		return 1/(1+np.exp(-x))
 	
+	# Output (prediction) formula
+	def output_formula(features, weights, bias):
+		return sigmoid(np.dot(features,weights) + bias)	\end{lstlisting} \newpage
 	
+%%%% PAGE 13 %%%%
+	\begin{lstlisting}
+	# Error (log-loss) formula
+	def error_formula(y, output):
+		return -y*np.log(output) - (1-y)*np.log(1-output)
 	
+	# Gradient descent step
+	def update_weights(x, y, weights, bias, learnrate):
+		output = y-output_formula(x,weights,bias)
+		weights = weights + learnrate*output*x
+		bias = bias + learnrate*output
+		return weights, bias 
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{General Neural Network}: We have our input layer ($x_1,...,x_n$), our hidden layer (set of linear models created from the input), and our output layer (a combination of linear models to create a non-linear model). If we have $n$ inputs, then our output will live in $n$ dimensions.\vspace*{2mm}\\
+	\textbf{Deep Neural Networks}: We have an input layer, our linear models combine to create non-linear models in the hidden layers, and we combine these to output an advance non-linear model.\vspace*{2mm}\\
+	\textbf{Multi-Class Networks}: If we have $n$ classes, then we have the same general architecture, but our output with have $n$ nodes that each output a probability for the class. We then take the highest probability as the class label.\vspace*{2mm}\\
+	\textbf{Feedforward}: the process neural networks use to turn the input into an output. We take a vector of input features, and apply a sequence of linear models and sigmoid functions, which then output a probability of which label to assign to the prediction. Say we have a network with 1 input layer, 2 hidden layers, and an output layer. We take the output of the previous layer and use it as in input for our sigmoid of the current layer. We calculate $\hat{y}$ as: $\hat{y} = \sigma \circ W^{(3)} \circ \sigma \circ W^{(2)} \circ \sigma \circ W^{(1)}(x)$ \vspace*{2mm}\\
+	\textbf{Error Function}: $E(W) = -\frac{1}{m} \sum_{i=1}^m y_i\,  ln(\hat{y}_i) + (1-y_i)ln(1-\hat{y}_i)$ where $\hat{y}_i$ is defined above. \vspace*{2mm}\\
+	\textbf{Backpropagation}: similar to gradient descent, we use this to update weights and get better predictions. However, keras handles this for us for the most part. To know: error term = $(y-\hat{y})\sigma'(x)$ \vspace*{1mm}
 	
+	\subsection{Implementing Gradient Descent (NumPy)}
+	\textbf{Mean Square Error}: the mean of the squares of the differences between the predictions and the labels.\vspace*{2mm}\\
+	\textbf{Sum of Squared Errors (SSE)}: $E = \frac{1}{2} \sum_{\mu} \sum_j [y_j^{\mu} - \hat{y}_j^{\mu}]^2$ where variable $j$ represents the output units of the network. The other sum over $\mu$ is a sum over all the data points. Adding these two errors and dividing by 2 gives us SSE. \vspace*{2mm}\\	
+	\textbf{Momentum}: used to avoid ending up in a local minima instead of a global minima when performing gradient descent.\vspace*{2mm}\\
+	\textbf{Weight Matrix}: Each row in the matrix will correspond to the weights leading out of a single input unit ($i$), and each column will correspond to the weights leading in to a single hidden unit ($j$). So for a network with 3 inputs and 2 hidden layers, we will have a 3x2 matrix of weights, which we index at $w_{ij}$.\vspace*{2mm}\\
+	\textbf{Input matrix}: we need to be sure our dimensions match. The columns in the input must match the rows in the hidden layer.\vspace*{2mm}\\
+	\textbf{Hidden Layer Input}: we take the dot product of the input vector with the corresponding column of the weight matrix for the correct hidden layer unit. \newpage	
+%%%% PAGE 14 %%%%
+
+	\begin{lstlisting}
+	def sigmoid(x):
+		return 1/(1+np.exp(-x))
 	
+	# Network size
+	N_input = 4
+	N_hidden = 3
+	N_output = 2
 	
+	np.random.seed(42)
+	X = np.random.randn(4)
 	
+	weights_input_to_hidden = np.random.normal(0, scale=0.1, size=(N_input, N_hidden))
+	weights_hidden_to_output = np.random.normal(0, scale=0.1, size=(N_hidden, N_output))
 	
+	hidden_layer_in = np.dot(X, weights_input_to_hidden) # 1x4*4x3 = 1x3
+	hidden_layer_out = sigmoid(hidden_layer_in) # 1x3 matrix passed through sigmoid
+	
+	output_layer_in = np.dot(hidden_layer_out, weights_hidden_to_output) # 1x3*3x2 = 1x2
+	output_layer_out = sigmoid(output_layer_in) # 1x2 matrix passed through sigmoid
+	\end{lstlisting} \vspace*{2mm}
+	
+	\subsection{Training Neural Networks}
+	\textbf{Underfitting}: an error due to high bias (too simple), low accuracy on both training and test sets.\vspace*{2mm}\\
+	\textbf{Overfitting}: an error due to high variance (too specific), low test accuracy but high training accuracy. \vspace*{2mm}\\
+	\textbf{Model Choice}: tend to the side of more complicated models, and apply techniques to prevent overfitting.\vspace*{2mm}\\
+	\textbf{Model Complexity Graph}: plots number of epochs against error, shows us when we start to overfit data as our testing error goes from decreasing to increasing when our training error is still decreasing.\vspace*{2mm}\\
+	\textbf{Early Stopping}: perform gradient descent until the testing error stops decreasing and starts increasing, at which point we stop training. \vspace*{2mm}\\
+	\textbf{Regularization}: large coefficients leads to our model overfitting, so we want to penalize large weights. We can redefine our error function using L1 or L2 regularization. \vspace*{2mm}\\
+	\textbf{L1 Regularization}: $E = -\frac{1}{m} \sum_{i=1}^m(1-y_i)ln(1-\hat{y}_i) + y_i\, ln(\hat{y}_i) + \lambda(|w_1| + ... + |w_n|)$\vspace*{2mm}\\
+	\textbf{When to use L1}: using L1 we end up with sparse vectors (0,1,1,0,0,...) and small weights go to 0. If we want to reduce the number of weights and choose the best features for our model, this is a good option.\vspace*{2mm}\\
+	\textbf{L2 Regularization}: $E = -\frac{1}{m} \sum_{i=1}^m(1-y_i)ln(1-\hat{y}_i) + y_i\, ln(\hat{y}_i) + \lambda(w_2^2 + ... + w_n^2)$\vspace*{2mm}\\
+	\textbf{When to use L2}: using L2 keeps all weights even if they are small. Normally this gives better results when training a model (smaller error), so this is the most common.\vspace*{2mm}\\
+	\textbf{Dropout}: some nodes have larger weights and more influence in our models training, so we choose a number of nodes to turn off randomly when training for each epoch (different each time). We assign a probability to each node of it being dropped when training.\vspace*{2mm}\\
+	\textbf{Random Restart}: when performing gradient descent, we can get stuck in a local minima instead of a global one. To avoid this, we can start from a few different random place and perform gradient descent from all of them (higher probability of finding global minima). \vspace*{2mm}\\
+	\textbf{ReLu Activation}: rectified linear unit, returns 0 if x is negative, otherwise returns x. The derivative is 1 is the number is positive, otherwise it is 0. \newpage
+%%%% PAGE 15 %%%%
+
+	\noindent \textbf{Batch Gradient Descent}: we run all of our data through the network for each epoch, calculate the gradient for all points, and move in the given direction.  \vspace*{2mm}\\
+	\textbf{Stochastic Gradient Descent}: take small subsets (batches) of our data and run them through the network, calculate the gradient for the subset of points and move in the given direction. Repeat this process for each batch of our data until we have gone through them all (this is considered one epoch). \vspace*{2mm}\\
+	\textbf{Learning Rate}: a large learning rate means big steps, which could go over our minima. A small learning rate means small steps, but longer training time. We can use a \textit{decreasing learning rate} to change over time as we get closer to a minima.\vspace*{2mm}\\
+	\textbf{Momentum}: we want to take the average of the last few steps to determine the next step size. We multiply this by a constant, $\beta$, between 0 and 1 so more recent steps have more influence than farther back steps. $STEP(n) = STEP(n) + \beta STEP(n-1) + \beta^2 STEP(n-2)+...$\vspace*{3mm}
+	
+	\subsection{Deep Learning with PyTorch}
+	\subsubsection{Building Neural Networks}
+	\textbf{Tensors}: the fundamental data structure for neural networks, similar to vectors and matrices.\vspace*{2mm}\\
+	\textbf{Reshaping Tensors}: we need input columns to match weights row. We can use .view(r,c) to do this.\vspace*{2mm}\\
+	\textbf{NumPy to Torch}: we often prepare data with NumPy and then want to convert it into tensors. The memory is shared between the arrays, so changing one will result in the other changing as well.
+	\begin{lstlisting}
+	a = np.random.rand(4,3)
+	b = torch.from_numpy(a)
+	b.mul_(2)
+	# Note that now 'a' has been multiplied by 2 as well
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{MNIST Dataset}: a collection of greyscale handwritten digits from 0-9. We read them in with a batch size of 64, and the trainloader contains batches of 64 images that we will get during each iteration (they will also be shuffled). 
+	\begin{lstlisting}
+	import numpy as np
+	import torch
+	import matplotlib.pyplot as plt
+	%matplotlib inline
+	%config InlineBackend.figure_format = 'retina'
+	from torchvision import datasets, transforms
+	
+	# Define a transform to normalize the data
+	transform = transforms.Compose([transforms.ToTensor(), 
+	                                transforms.Normalize((0.5,), (0.5,)),])
+	
+	# Download and load the training data
+	trainset = datasets.MNIST('~/.pytorch/MNIST_data/', download=True, train=True, 
+	                          transform=transform)
+	trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
+	
+	dataiter = iter(trainloader) # grab first batch, used only to inspect some images
+	images, labels = dataiter.next()
+	print(images.shape) # torch.Size([64, 1, 28, 28]) [batch, color, height, width]
+	\end{lstlisting} \newpage
+%%%% PAGE 16 %%%%
+
+	\noindent \textbf{PyTorch Functional Module}: we can define a model in PyTorch by using the functional library. We will build a 3 layer NN that uses a ReLU activation function and outputs to a softmax. We also want to initialize our weights and biases (this is done automatically, but we can also do it manually with custom values).
+	\begin{lstlisting}
+	import torch.nn.functional as F
+	
+	class Network(nn.Module): # subclass of nn.Module
+		def __init__(self):
+			super().__init__() # defines architecture
+			# Define input layers (Wx+b) for two hidden and one output layer
+			self.hidden1 = nn.Linear(784, 128) # initial input
+			self.hidden2 = nn.Linear(128, 64) # input from first hidden layer
+			self.output = nn.Linear(64, 10) # Output layer, 10 units - one for each digit
+		
+		def forward(self, x):
+			x = F.relu(self.hidden1(x)) # Hidden layer1 with relu activation
+			x = F.relu(self.hidden2(x)) # Hidden layer2 with relu activation
+			x = F.softmax(self.output(x), dim=1) # Output layer with softmax activation
+			return x
+	
+	model = Network()
+	model
+	# Network(
+	# (hidden1): Linear(in_features=784, out_features=128, bias=True)
+	# (hidden2): Linear(in_features=128, out_features=64, bias=True)
+	# (output): Linear(in_features=64, out_features=10, bias=True)
+	# )
+	
+	# Set biases to all zeros (note that this is done inplace)
+	model.hidden1.bias.data.fill_(0)
+	# sample from random normal with standard dev = 0.01 (note that this is done inplace)
+	model.hidden1.weight.data.normal_(std=0.01)	
+	\end{lstlisting} \vspace*{1mm}
+	\textbf{PyTorch Sequential Module}: lets build the same model above, using the sequential module.
+	\begin{lstlisting}
+	from torch import nn
+	
+	# Hyperparameters for our network
+	input_size = 784
+	hidden_sizes = [128, 64]
+	output_size = 10
+	
+	# Build a feed-forward network
+	model = nn.Sequential(nn.Linear(input_size, hidden_sizes[0]),
+	                      nn.ReLU(),
+	                      nn.Linear(hidden_sizes[0], hidden_sizes[1]),
+	                      nn.ReLU(),
+	                      nn.Linear(hidden_sizes[1], output_size),
+	                      nn.Softmax(dim=1))
+	                      
+	# Forward pass through the network to classify single image
+	images, labels = next(iter(trainloader))
+	images.resize_(images.shape[0], 1, 784)
+	ps = model.forward(images[0,:])
+	\end{lstlisting} \newpage
+%%%% PAGE 17 %%%%
+
+	\subsubsection{Training Neural Networks}
+	\textbf{Loss function (cost)}: a measure of our prediction error after a forward pass. We then pass this through back propagation to update our weights using gradient descent. We want to use \textit{cross entropy} as our loss for multi-class classification, but we will do so by using LogSoftmax and NLLLoss (negative log likelihood loss) together. \vspace*{2mm}\\
+	\textbf{Autograd}: a module used to automatically calculate gradient of tensors for backpropagation with respect to our loss function. By default when we create a NN, all parameters are initialized to require gradients (but you can manually turn them off if needed).\vspace*{2mm}\\
+	\textbf{Optim}: used to update the weights with the gradients, needs model parameters and learning rates. Note that we need to zero the gradients on each training pass otherwise you retain gradient from previous steps and weights do not update properly. \vspace*{2mm}\\
+	\textbf{General Process (loop)}: \\
+	1. Make a forward pass through the network.\\
+	2. Use the network output to calculate the loss.\\
+	3. Perform a backward pass through the network to calculate gradients.\\
+	4. Take a step with the optimizer to update the weights.
+	\begin{lstlisting}
+	from torch import optim
+	
+	# Build Sequential model
+	model = nn.Sequential(nn.Linear(784, 128),
+	                      nn.ReLU(),
+	                      nn.Linear(128, 64),
+	                      nn.ReLU(),
+	                      nn.Linear(64, 10),
+	                      nn.LogSoftmax(dim=1)) # sum across the columns
+
+	criterion = nn.NLLLoss() # Neg Log Likelihood Loss
+	optimizer = optim.SGD(model.parameters(), lr=0.003) # Stochastic Gradient Descent
+	
+	epochs = 5
+	for e in range(epochs): # train for 5 steps
+		running_loss = 0
+		for images, labels in trainloader:
+			images = images.view(images.shape[0], -1) # Flatten images to a 784 long vector
+			
+			optimizer.zero_grad() # clear any previous gradients
+			output = model.forward(images) # run images through model to get yhat
+			loss = criterion(output, labels) # calculate loss
+			loss.backward() # perform back pass & calculate gradients
+			optimizer.step() # move in the direction of gradient
+			
+			running_loss += loss.item()
+		else:
+			print(f"Training loss: {running_loss/len(trainloader)}") # 1.89 -> 0.39
+	
+	# Check model predictions
+	images, labels = next(iter(trainloader))
+	img = images[0].view(1, 784)
+	with torch.no_grad(): # Turn off gradients to speed up this part
+		logits = model.forward(img) # get 
+	
+	# Output of the network are logits, need to take softmax for probabilities
+	ps = F.softmax(logits, dim=1) # class probabilities
+	print(ps) # tensor of size [1,10] containing probability for each class
+	\end{lstlisting} \newpage
+%%%% PAGE 18 %%%%
+
+	\subsubsection{Validation and Dropout}
+	\textbf{topk}: this returns the $k$ highest values (k=1 means most likely class). This method returns a tuple of the top-$k$ probability and the top-$k$ indices. We can then compare these to their corresponding labels to see how many were correctly predicted. \vspace*{2mm}\\
+	\textbf{Accuracy}: we can take the mean of the comparison performed above between the predictions and labels to find out validation accuracy. We also turned the gradients off when doing this to speed up the process.\vspace*{2mm}\\
+	\textbf{Overfitting}: our training loss continues to decrease but our validation does not (could increase).\vspace*{2mm}\\
+	\textbf{Dropout}: regularization where we randomly drop input units so information is shared between the weights (increases ability to generalize to new data). However, when we are doing validation/testing we want to turn off dropout so we have all of our units.
+	\begin{lstlisting}
+	import torch
+	from torchvision import datasets, transforms
+	from torch import nn, optim
+	import torch.nn.functional as F
+	import matplotlib.pyplot as plt
+	
+	class Classifier(nn.Module): # Define a NN using dropout
+		def __init__(self):
+			super().__init__()
+			self.fc1 = nn.Linear(784, 256)
+			self.fc2 = nn.Linear(256, 128)
+			self.fc3 = nn.Linear(128, 64)
+			self.fc4 = nn.Linear(64, 10)
+			self.dropout = nn.Dropout(p=0.2) 
+		
+		def forward(self, x):
+			x = x.view(x.shape[0], -1) # flatten tensor
+			x = self.dropout(F.relu(self.fc1(x))) # hidden layer 
+			x = self.dropout(F.relu(self.fc2(x))) # hidden layer 
+			x = self.dropout(F.relu(self.fc3(x))) # hidden layer 
+			x = F.log_softmax(self.fc4(x), dim=1) # output layer 
+			return x
+	
+	model = Classifier()
+	criterion = nn.NLLLoss()
+	optimizer = optim.Adam(model.parameters(), lr=0.003)
+	
+	train_losses, test_losses = [], []
+	epochs = 10
+	for e in range(epochs):
+		running_loss = 0
+		for images,labels in trainloader: # training loop
+			optimizer.zero_grad() # clear all previous gradients
+			output = model.forward(images) # log probabilities 
+			loss = criterion(output, labels) # calculate loss
+			loss.backward() # perform back prop and find gradient
+			optimizer.step() # take a step in direction of gradient
+			running_loss += loss.item() # add loss for each batch
+		else: 
+			test_loss = 0
+			accuracy = 0
+			with torch.no_grad(): # turn off gradients
+				model.eval() # turn off dropout
+				for images, labels in testloader: # validation loop
+					log_ps = model.forward(images) # log probabilities
+					test_loss += criterion(log_ps, labels) # add loss for each batch
+		\end{lstlisting} \newpage
+%%%% PAGE 19 %%%%
+
+	\begin{lstlisting}
+					ps = torch.exp(log_ps) # get probabilities
+					top_p, top_class = ps.topk(k=1, dim=1) # get predicted class
+					equals = (top_class == labels.view(*top_class.shape)) # correct predictions
+					accuracy += torch.mean(equals.type(torch.FloatTensor)) # total correct
+		
+			model.train() # turn back on dropout
+			train_losses.append(running_loss/len(trainloader)) # train loss for current epoch
+			test_losses.append(test_loss/len(testloader)) # test loss for current epoch
+			
+			print("Epoch: {}/{}.. ".format(e+1, epochs),
+			      "Training Loss: {:.3f}.. ".format(running_loss/len(trainloader)),
+			      "Test Loss: {:.3f}.. ".format(test_loss/len(testloader)),
+			      "Test Accuracy: {:.3f}".format(accuracy/len(testloader)))
+	
+	# Inference (predict on new data)
+	model.eval() # turn off dropout
+	images, labels = next(iter(testloader)) # get image and label
+	img = images[0].view(1, 784)# Convert 2D image to 1D vector
+	
+	with torch.no_grad(): # Calculate the class probabilities
+		output = model.forward(img) # log probabilities
+	ps = torch.exp(output) # tensor of probabilities	      
+	\end{lstlisting} \vspace*{2mm}
+	
+	\subsubsection{Saving and Loading Models}
+	\textbf{state\_dict}: after training a model, we want to save it to load later and either use to make predictions or continue training on. This way we don't have to retrain every time we load a workspace. We save a state\_dict which contains the weights and bias matrices for each of our layers. \vspace*{2mm}\\
+	\textbf{Saving and Loading}: we need to rebuild the model exactly as it was when we load in a state\_dict. This means saving in input size, output size, hidden layers, and the weights/bias. 
+	\begin{lstlisting}
+	checkpoint = {'input_size': 784,
+	              'output_size': 10,
+	              'hidden_layers': [each.out_features for each in model.hidden_layers],
+	              'state_dict': model.state_dict()}
+	
+	torch.save(checkpoint, 'checkpoint.pth')
+	
+	def load_checkpoint(filepath):
+		checkpint = torch.load(filepath)
+		model = ... # set up correct model architecture
+		model.load_state_dict(checkpoint['state_dict'])
+		return model
+		
+	model = load_checkpoint('checkpoint.pth')	
+	\end{lstlisting} \vspace*{2mm}
+	
+	\subsubsection{Loading Image Data}
+	\textbf{ImageFolder}: we want to have a directory that contains all of our images, separated by train/test folders within, and separated by classes within the train/test directories. \vspace*{2mm}\\
+	\textbf{Transform}: we can augment images when reading them in by using the transform method. Note that we only want to do this to the training data and now the testing or validation data sets. The training data will just get the normal transform methods. \newpage
+%%%% PAGE 20 %%%%
+
+	\noindent \textbf{Data Loaders}: takes a dataset and returns batches of images/labels (can also shuffle data after each epoch). You have to convert it to an iterator and call next() since it is a generator.
+	\begin{lstlisting}
+	data_dir = 'Cat_Dog_data' # directory containing train/test folders
+	
+	train_transforms = transforms.Compose([transforms.RandomRotation(30), # augment
+	                                       transforms.RandomHorizontalFlip(), # augment
+	                                       transforms.Resize(255), # 255x255 image
+	                                       transforms.CenterCrop(224),
+	                                       transforms.ToTensor() # convert to tensor
+	                                      ])
+	
+	test_transforms = transforms.Compose([transforms.Resize(255), # 255x255 image
+	                                      transforms.CenterCrop(224),
+	                                      transforms.ToTensor() # convert to tensor
+	                                     ])
+	# Note that ToTensor automatically converts color range to [0,1]
+	
+	# Load datasets from folders, pass transformations as they are loaded
+	train_data = datasets.ImageFolder(data_dir + '/train', transform=train_transforms)
+	test_data = datasets.ImageFolder(data_dir + '/test', transform=test_transforms)
+	
+	# Load into generator with batch size 32 (shuffle training data)
+	trainloader = torch.utils.data.DataLoader(train_data, batch_size=32, shuffle=True)
+	testloader = torch.utils.data.DataLoader(test_data, batch_size=32)	
+	\end{lstlisting} \vspace*{2mm}
+	
+	\subsubsection{Transfer Learning}
+	\textbf{Case 1 (small data set, similar data)}: we want to drop the output layer and add our own fully connected layer to match the number of classes. We freeze all weights of the other layers but initialize random weights for new output layer, training the network only on these new output layer weights. This prevents overfitting since the data is small. \vspace*{2mm}\\
+	\textbf{Case 2 (small data set, different data)}: we want to only keep the early layers (not the high level features since they are different data) and add a new fully connected layer to match the number of classes. We freeze the early layers weights and train the network only for the new output layer. This prevents overfitting since the data is small. \vspace*{2mm}\\
+	\textbf{Case 3 (large data set, similar data)}: drop the output layer and add a fully connected layer with the number of classes for our data. Since we have a large dataset, we retrain all of the weights in the network since overfitting is less of a concern (fine-tuning the weights).\vspace*{2mm}\\
+	\textbf{Case 4 (large data set, different data)}: we use the same approach as case 3 above. However, if this does not give us a successful model we can randomly initialize the weights and train the network from scratch.
+	
+
 	
 	
 	
