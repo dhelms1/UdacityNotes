@@ -20,3 +20,9 @@
 \BOOKMARK [3][-]{subsubsection.2.4.4}{Saving and Loading Models}{subsection.2.4}% 20
 \BOOKMARK [3][-]{subsubsection.2.4.5}{Loading Image Data}{subsection.2.4}% 21
 \BOOKMARK [3][-]{subsubsection.2.4.6}{Transfer Learning}{subsection.2.4}% 22
+\BOOKMARK [1][-]{section.3}{Unsupervised Learning}{}% 23
+\BOOKMARK [2][-]{subsection.3.1}{Clustering \(KMeans\)}{section.3}% 24
+\BOOKMARK [2][-]{subsection.3.2}{Hierarchical and Density Based Clustering}{section.3}% 25
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Hierarchical Clustering}{subsection.3.2}% 26
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Density-Based Clustering}{subsection.3.2}% 27
+\BOOKMARK [2][-]{subsection.3.3}{Gaussian Mixture Models and Cluster Validation}{section.3}% 28

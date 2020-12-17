@@ -901,9 +901,192 @@
 	\textbf{Case 1 (small data set, similar data)}: we want to drop the output layer and add our own fully connected layer to match the number of classes. We freeze all weights of the other layers but initialize random weights for new output layer, training the network only on these new output layer weights. This prevents overfitting since the data is small. \vspace*{2mm}\\
 	\textbf{Case 2 (small data set, different data)}: we want to only keep the early layers (not the high level features since they are different data) and add a new fully connected layer to match the number of classes. We freeze the early layers weights and train the network only for the new output layer. This prevents overfitting since the data is small. \vspace*{2mm}\\
 	\textbf{Case 3 (large data set, similar data)}: drop the output layer and add a fully connected layer with the number of classes for our data. Since we have a large dataset, we retrain all of the weights in the network since overfitting is less of a concern (fine-tuning the weights).\vspace*{2mm}\\
-	\textbf{Case 4 (large data set, different data)}: we use the same approach as case 3 above. However, if this does not give us a successful model we can randomly initialize the weights and train the network from scratch.
+	\textbf{Case 4 (large data set, different data)}: we use the same approach as case 3 above. However, if this does not give us a successful model we can randomly initialize the weights and train the network from scratch. \vspace*{2mm}\\
+	\textbf{Matching Data}: most pretrained models use an image size of 224x224 as input. They also require you to normalize the color channels in the same way that they were trained, with mean [0.485, 0.456, 0.406] and std [0.229, 0.224, 0.225].
+	\begin{lstlisting}
+	import torch
+	from torch import nn
+	from torch import optim
+	import torch.nn.functional as F
+	from torchvision import datasets, transforms, models
+	from collections import OrderedDict
 	
+	data_dir = 'Cat_Dog_data' \end{lstlisting}\newpage
+%%%% PAGE 21 %%%%
 
+	\begin{lstlisting}
+	train_transforms = transforms.Compose([transforms.RandomRotation(30),
+	                                       transforms.RandomResizedCrop(224),
+	                                       transforms.RandomHorizontalFlip(),
+	                                       transforms.ToTensor(),
+	                                       transforms.Normalize([0.485, 0.456, 0.406],
+	                                                            [0.229, 0.224, 0.225])])
+	
+	test_transforms = transforms.Compose([transforms.Resize(255),
+	                                      transforms.CenterCrop(224),
+	                                      transforms.ToTensor(),
+	                                      transforms.Normalize([0.485, 0.456, 0.406],
+	                                                           [0.229, 0.224, 0.225])])
+	
+	train_data = datasets.ImageFolder(data_dir + '/train', transform=train_transforms)
+	test_data = datasets.ImageFolder(data_dir + '/test', transform=test_transforms)
+	
+	trainloader = torch.utils.data.DataLoader(train_data, batch_size=64, shuffle=True)
+	testloader = torch.utils.data.DataLoader(test_data, batch_size=64)
+	
+	model = models.densenet121(pretrained=True)  # import model with pretrained weights
+	
+	# Use GPU if it's available (otherwise use a CPU)
+	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+	
+	for param in model.parameters(): # freeze all layers
+		param.requires_grad = False # turn off gradients
+	
+	model.classifier = nn.Sequential(OrderedDict([ # replace old models classifier
+	                                ('fc1', nn.Linear(1024, 500)),
+	                                ('relu', nn.ReLU()),
+	                                ('fc2', nn.Linear(500, 2)),
+	                                ('output', nn.LogSoftmax(dim=1)) ]))
+	
+	criterion = nn.NLLLoss() # define loss function
+	optimizer = optim.Adam(model.classifier.parameters(), lr=0.003)
+	
+	model.to(device); # move model to either GPU or CPU
+	
+	epochs = 1 # train for one epoch
+	steps = 0
+	running_loss = 0 # training loss
+	print_every = 5
+	for epoch in range(epochs):
+		for inputs, labels in trainloader: # training loop
+			steps += 1
+			# Move input and label tensors to the default device
+			inputs, labels = inputs.to(device), labels.to(device)
+			
+			optimizer.zero_grad() # clear previous gradients
+			logps = model.forward(inputs) # log probabilities
+			loss = criterion(logps, labels) # caclulate loss
+			loss.backward() # back prop gradient descent
+			optimizer.step() 
+			
+			running_loss += loss.item()
+			
+			if steps % print_every == 0: # every 5 steps (validation loop)
+				test_loss = 0
+				accuracy = 0
+				model.eval() # turn off dropout 
+				\end{lstlisting}\newpage
+%%%% PAGE 22 %%%%
+
+	\begin{lstlisting}
+	
+				with torch.no_grad(): # turn off gradient descent
+					for inputs, labels in testloader: # loop through validation
+						inputs, labels = inputs.to(device), labels.to(device)
+						logps = model.forward(inputs) # log probabilities
+						batch_loss = criterion(logps, labels)
+						
+						test_loss += batch_loss.item()
+						
+						ps = torch.exp(logps) # probabilities
+						top_p, top_class = ps.topk(1, dim=1) # get top class
+						equals = top_class == labels.view(*top_class.shape)
+						accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
+						
+					print(f"Epoch {epoch+1}/{epochs}.. "
+					      f"Train loss: {running_loss/print_every:.3f}.. "
+					      f"Test loss: {test_loss/len(testloader):.3f}.. "
+					      f"Test accuracy: {accuracy/len(testloader):.3f}")
+					running_loss = 0 # reset training loss
+					model.train() # turn dropout back on
+	\end{lstlisting} \newpage
+%%%% PAGE 23 %%%%
+
+	\section{Unsupervised Learning}
+	\subsection{Clustering (KMeans)}
+	\textbf{Prior Knowledge}: when choosing $k$, we may have an idea of how many clusters we want to create based off of a question that have been presented. \vspace*{2mm}\\
+	\textbf{Decision Method}: when choosing $k$, we don't know how many clusters we want our data to be in.\vspace*{2mm}\\
+	\textbf{Elbow Method}: create a plot of the number of clusters (on the x-axis) vs. the average distance of the center of the cluster to each point (on the y-axis). We want to chose the $k$ where we stop decreasing our distance by a large amount (no substantial change from increasing $k$).
+	\begin{lstlisting}
+	scores = []
+	centers = list(range(1,11))
+	for k in centers: # fit k from 1 to 10
+		model = KMeans(k).fit(data)
+		scores.append(abs(model.score(data))) # distance from center
+	
+	plt.plot(centers, scores, linestyle='--', marker='o')
+	plt.ylabel('Score (Avg Distance)')
+	plt.xlabel('K-value (Centers)')
+	plt.title('Scree Plot'); # we see 4 is the correct k
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{Algorithm}: randomly place $k$ centroids in your data. Then assign each point to the closest centroid and move it to the center of the points assigned (repeat this until the centroid stops moving). \vspace*{2mm}\\
+	\textbf{Optimal Clusters}: to make sure you have the best clusters, KMeans will be performed multiple times to chose the best set of clusters that have the smallest average distance from point to centroid.\vspace*{2mm}\\
+	\textbf{Scalers}: \textit{StandardScaler} will transform data to have a mean of 0 and standard deviation of 1. \\ \textit{MinMaxScaler} will transform the data to be in the range [0,1] with respect to the max value. Both will result in different clusters, but \textit{StandardScaler} is the most common for clustering algorithms.\vspace*{2mm}
+	
+	\subsection{Hierarchical and Density Based Clustering}
+	\subsubsection{Hierarchical Clustering}
+	\textbf{Single-Link Clustering}: we specify 1 to $n$ (number of examples) clusters that we want to make. It looks at the closest points to one another in order to make clusters. A warning is that this method can eat up a lot of points and cause huge imbalances. \vspace*{2mm}\\
+	\textbf{Dendrograms}: shows us how the hierarchical cluster is separated. No matter how many dimensions are data is in, we can also produce this graph to visualize the data. \vspace*{2mm}\\
+	\textbf{Complete-Link}: similar to single link, but the distance measure is now the farthest point from a cluster instead (this produces compact clusters). \vspace*{2mm}\\
+	\textbf{Average-Link}: similar to single link, but the distance measure is between every point in the clusters and the average is taken from this value. \vspace*{2mm}\\
+	\textbf{Ward's Method}: (default method in sklearn). This involves finding a central point between two clusters and taking the squared distance between all points in the clusters and adding them together. You then subtract the variance of the two clusters to find the total distance. (minimizes variance). \vspace*{2mm}\\
+	\textbf{Adjusted Rand Score}: a score between -1 and 1, where 1 means two clusterings are identical of how they grouped the samples in a dataset. \newpage
+%%%% PAGE 25 %%%%
+
+	\begin{lstlisting}
+	from sklearn import datasets
+	from sklearn.cluster import AgglomerativeClustering
+	from sklearn.metrics import adjusted_rand_score 
+	from sklearn import preprocessing
+	from scipy.cluster.hierarchy import linkage, dendrogram
+	
+	iris = datasets.load_iris()
+	normalized_X = preprocessing.normalize(iris.data) # range [0,1]
+	
+	ward = AgglomerativeClustering(n_clusters=3)
+	ward_pred = ward.fit_predict(normalized_X)
+	
+	complete = AgglomerativeClustering(n_clusters=3, linkage="complete")
+	complete_pred = complete.fit_predict(normalized_X)
+	
+	avg = AgglomerativeClustering(n_clusters=3, linkage="average")
+	avg_pred = avg.fit_predict(normalized_X)
+	
+	ward_ar_score = adjusted_rand_score(iris.target, ward_pred) # 0.8857
+	complete_ar_score = adjusted_rand_score(iris.target, complete_pred) # 0.6444
+	avg_ar_score = adjusted_rand_score(iris.target, avg_pred) # 0.5584
+	
+	linkage_type = 'ward'
+	linkage_matrix = linkage(normalized_X, linkage_type) # ward clustering
+	dendrogram(linkage_matrix)
+	plt.show();
+	
+	# We can also use seaborn which performs clustering and graphs in one method
+	sns.clustermap(normalized_X, figsize=(12,18), method=linkage_type, cmap='viridis')
+	plt.show();
+	\end{lstlisting}\vspace*{2mm}
+	\textbf{Advantages}: hierarchical representation can be informative and provides ability to visualize, especially good when dataset contains real hierarchical relationships (evolutionary biology). \vspace*{2mm}\\
+	\textbf{Disadvantages}: sensitive to noise/outliers, computationally intensive with $O(N^2)$.\vspace*{2mm}
+	\subsubsection{Density-Based Clustering}
+	\textbf{DBSCAN}: groups together points that are closely packed together. It does this by a factor of $\epsilon$ (which determines search distance around a point) and $MinPts$ (minimum number of points required to form a cluster). It labels points that don't fall into these clusters as noise. Points that have clusters around them are labeled \textit{core points} and the points are them that make up the cluster are called \textit{border points}. 
+	\begin{lstlisting}
+	from sklearn import cluster
+	
+	epsilon = .75
+	min_samples = 10
+	
+	dbscan = cluster.DBSCAN(eps=epsilon, min_samples=min_samples)
+	clustering_labels_2 = dbscan.fit_predict(dataset_2)
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{Advantages}: don't need to specify number of clusters, flexibility in shape/size of clusters, able to deal with noise and outliers. \vspace*{2mm}\\
+	\textbf{Disadvantages}: border points that are reachable from two clusters, difficulty finding clusters of varying densities. \newpage
+%%%% PAGE 25 %%%%
+
+	\subsection{Gaussian Mixture Models and Cluster Validation}
+	
+	
+	
+	
 	
 	
 	
