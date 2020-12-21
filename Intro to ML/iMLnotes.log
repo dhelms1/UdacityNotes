@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7250 64-bit) (preloaded format=pdflatex 2020.2.10)  17 DEC 2020 08:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7250 64-bit) (preloaded format=pdflatex 2020.2.10)  20 DEC 2020 08:23
 entering extended mode
 **./iMLnotes.tex
 (iMLnotes.tex
@@ -531,33 +531,40 @@ ng (ext4): destination with the same identifier (name{page.1}) has been already
                    \relax 
 l.98 ...da$ leads to more complex models. \newpage
                                                    [1] [2] [3] [4] [5]
-<./Figures/SVM.png, id=344, 531.48563pt x 460.72125pt>
+<./Figures/SVM.png, id=354, 531.48563pt x 460.72125pt>
 File: ./Figures/SVM.png Graphic file (type png)
 <use ./Figures/SVM.png>
 Package pdftex.def Info: ./Figures/SVM.png  used on input line 275.
 (pdftex.def)             Requested size: 159.44691pt x 138.21744pt.
  [6 <./Figures/SVM.png>] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [1
 8]
-[19] [20] [21] [22] [23] [24]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1096.
- [25]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1096.
+[19] [20] [21] [22] [23] [24] [25] [26] [27]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1234.
+ [28]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1234.
  (iMLnotes.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1096.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1096.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1234.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1234.
 
-Package rerunfilecheck Info: File `iMLnotes.out' has not changed.
-(rerunfilecheck)             Checksum: 3B43F492138CAA423FFF7C76832DF8BF;2137.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1096.
+
+
+Package rerunfilecheck Warning: File `iMLnotes.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `iMLnotes.out':
+(rerunfilecheck)             Before: AC2A7A62C9E42B238071B62EC46B03AB;2303
+(rerunfilecheck)             After:  55858F5E5C09A452CB7DEE6B7164C532;2379.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1234.
  ) 
 Here is how much of TeX's memory you used:
- 11029 strings out of 492484
- 155090 string characters out of 3131051
+ 11166 strings out of 492484
+ 157152 string characters out of 3131051
  743034 words of memory out of 3000000
- 14391 multiletter control sequences out of 15000+200000
+ 14428 multiletter control sequences out of 15000+200000
  14460 words of font info for 53 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,9n,47p,719b,1407s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 39i,9n,47p,719b,1431s stack positions out of 5000i,500n,10000p,200000b,50000s
 <D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><D:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><D:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><D:/Program Files/MiKT
@@ -573,9 +580,9 @@ iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><D:/Program Files/MiKTeX 2.9
 /fonts/type1/public/amsfonts/cm/cmti10.pfb><D:/Program Files/MiKTeX 2.9/fonts/t
 ype1/public/amsfonts/cm/cmtt9.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/publ
 ic/amsfonts/symbols/msbm10.pfb>
-Output written on iMLnotes.pdf (26 pages, 801643 bytes).
+Output written on iMLnotes.pdf (29 pages, 830770 bytes).
 PDF statistics:
- 1264 PDF objects out of 1440 (max. 8388607)
- 818 named destinations out of 1000 (max. 500000)
- 230 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1402 PDF objects out of 1440 (max. 8388607)
+ 918 named destinations out of 1000 (max. 500000)
+ 246 words of extra memory for PDF output out of 10000 (max. 10000000)
 

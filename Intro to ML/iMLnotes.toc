@@ -26,3 +26,6 @@
 \contentsline {subsubsection}{\numberline {3.2.1}Hierarchical Clustering}{23}{subsubsection.3.2.1}%
 \contentsline {subsubsection}{\numberline {3.2.2}Density-Based Clustering}{24}{subsubsection.3.2.2}%
 \contentsline {subsection}{\numberline {3.3}Gaussian Mixture Models and Cluster Validation}{25}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Cluster Analysis Process}{25}{subsubsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.4}Dimensionality Reduction and PCA}{26}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Random Projections and ICA}{28}{subsection.3.5}%

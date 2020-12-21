@@ -1083,9 +1083,147 @@
 %%%% PAGE 25 %%%%
 
 	\subsection{Gaussian Mixture Models and Cluster Validation}
+	\textbf{GMM Clustering}: assumes that each cluster follows the normal distribution.\vspace*{2mm}\\
+	\textbf{Multivariate Gaussian Distribution}: more than one variable follows the normal distribution. We can plot a point in the middle of a cluster (the mean of the normal distributions) and each ellipse represents 1 standard deviation from the mean. \vspace*{2mm}\\
+	\textbf{Expectation Maximization Algorithm}: initialize $k$ Gaussian distributions, soft-cluster the data (``expectation"), re-estimate the Gaussian's (``maximization"), and evaluate log-likelihood to check for convergence. If no convergence then repeat from step 2. \vspace*{2mm}\\
+	\textbf{Step 1}: set mean and variance for each Gaussian distribution by running $k$-means and using clusters produced to initialize our parameters.\vspace*{2mm}\\
+	\textbf{Step 2}: find the membership likelihood (probability) that each points belongs to each clusters.\vspace*{2mm}\\
+	\textbf{Step 3}: find the new weighted values for mean and variance and updated the Gaussian distributions.\vspace*{2mm}\\
+	\textbf{Step 4}: estimate the log-likelihood, we want to maximize this value (converge to a high value).\vspace*{2mm}\\
+	\textbf{Covariance Type}: determine the shape of the clusters (sphere, full, etc.).
+	\begin{lstlisting}
+	from sklearn import datasets, mixture
 	
+	X = datasets.load_iris().data[:10]
 	
+	gmm = mixture.GaussianMixture(n_components=3)
+	gmm.fit(X)
+	clustering = gmm.predict(X)
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{Advantages}: soft-clustering (sample membership of multiple clusters) and flexibility of cluster shape.\vspace*{2mm}\\
+	\textbf{Disadvantages}: sensitive to initialization values, possible converge to a local optimum, and a slow convergence rate.\vspace*{2mm}
 	
+	\subsubsection{Cluster Analysis Process}
+	\textbf{Feature Selection}: we may want to cluster based on a select few features (if we have 1000's of dimensions we may only want to use a few features).\vspace*{2mm}\\
+	\textbf{Feature Extraction}: transforming the data to generate useful features (PCA).\vspace*{2mm}\\
+	\textbf{Algorithm Selection}: multiple models must be tried to find the best fit (no one model is the best). The \textit{proximity measure} is used to calculate the distance between points (different for each problem  type).\vspace*{2mm}\\
+	\textbf{Cluster Validation}: \textit{indices}, evaluating how well a clustering turned out to be (score of the quality).\vspace*{.5mm}\\
+	\hspace*{3mm} - \textbf{External Indices}: used if our data was originally labeled (Adjusted Rand Score).\vspace*{.5mm}\\
+	\hspace*{3mm} - \textbf{Internal Indices}: measure the fit between data and clusters only using the data.\vspace*{.5mm}\\
+	\hspace*{3mm} - \textbf{Relative Indices}: which of two clustering structures is the best.\vspace*{.5mm}\\
+	\hspace*{3mm} - \textbf{Compactness}: measure of how close the elements of a cluster are to each other.\vspace*{.5mm}\\
+	\hspace*{3mm} - \textbf{Separability}: measure of how far clusters are from each other.\vspace*{.5mm}\\
+	\textbf{Results Interpretation}: determine what insights can be gotten from the clusters (assigning labels).\vspace*{2mm}\\
+	\textbf{Silhouette Coefficient}: a measure for \textit{internal indices} that uses the average distance between a clusters points compared to the next closest clusters points. This can help us determine our value of $k$ (the closer to 1 the better). We can also use this to compare the performance of different algorithms on a dataset. Works best for dense, circular clusters. Don't use for DBSCAN. \newpage
+%%%% PAGE 26 %%%%
+
+	\noindent \textbf{make\_blob}: an sklearn method that creates a dataset of Gaussian blobs.
+	\begin{lstlisting}
+	import matplotlib.pyplot as plt
+	from sklearn import cluster, datasets, mixture
+	from sklearn.cluster import KMeans
+	from sklearn.metrics import adjusted_rand_score
+	from sklearn.mixture import GaussianMixture
+	%matplotlib inline
+	import seaborn as sns
+	
+	iris = sns.load_dataset("iris")
+	features = ['sepal_length','sepal_width','petal_length','petal_width']
+	
+	# PairGrid - plots every pair of features against each other in a subplot
+	g = sns.PairGrid(iris, hue="species", palette=sns.color_palette("cubehelix", 3),  
+	                 vars=features)
+	g.map(plt.scatter)
+	plt.show()
+	
+	# Predict clusters using K-Means and add to dataframe
+	kmeans_iris = KMeans(n_clusters=3)
+	pred_kmeans_iris = kmeans_iris.fit_predict(iris[features])
+	iris['kmeans_pred'] = pred_kmeans_iris
+	
+	# Predict using GMM and add to dataframe
+	gmm_iris = mixture.GaussianMixture(n_components=3).fit(iris[features])
+	pred_gmm_iris = gmm_iris.predict(iris[features])
+	iris['gmm_pred'] = pred_gmm_iris
+	
+	# Find Adj Rand Score (since we have too many dimensions to visualize)
+	iris_kmeans_score = adjusted_rand_score(iris.species, iris.kmeans_pred) # 0.73
+	iris_gmm_score = adjusted_rand_score(iris.species, iris.gmm_pred) # 0.904 (best)
+	\end{lstlisting} \vspace*{2mm}
+	
+	\subsection{Dimensionality Reduction and PCA}
+	\textbf{PCA}: taking the dataset and reducing it to only the parts that hold the most information. \vspace*{2mm}\\
+	\textbf{Latent Features}: features that are not directly in our dataset, but encompass features that already exist. Putting features of our data into broad categories to reduce dimensions. \vspace*{2mm}\\
+	\textbf{Feature Selection \href{https://scikit-learn.org/stable/modules/feature\_selection.html}{(doc)}}: finding a subset of the original data that is most relevant and useful. \vspace*{.5mm}\\
+	\hspace*{3mm} - \textbf{Filter methods}: finding correlation between data (unsupervised) or labels (supervised) and filtering \hspace*{5mm} out the less useful ones. Methods used include Pearson's Correlation, LDA, and ANOVA.\vspace*{.5mm}\\
+	\hspace*{3mm} - \textbf{Wrapper methods}: selecting features based on their impact on the model performance. Multiple \hspace*{6mm} models and cross validation are used, and the features that produce the best model are kept. \\ \hspace*{6mm} Methods used include Forward Search, Backward Search, and Recursive Feature Elimination. \vspace*{2mm}\\
+	\textbf{Feature Extraction}: extracting new `latent features' from original dataset. Keeps the most information possible from multiple features while also reducing dimensionality at a maximum. This is the goal of PCA, but can also be accomplished through ICA and Random Projection. \vspace*{2mm}\\
+	\textbf{Principal Components}: are linear combinations of the original features in a dataset that aim to retain the most information in the original data (similar to latent features). We want to find a projection of the data onto a smaller number of features, while preserving the maximum amount of information. \newpage
+%%%% PAGE 27 %%%%
+
+	\noindent \textbf{PCA Properties}: (1) each component captures the largest amount of variance in the dataset (reduce the distance each point is from the component). (2) components are orthogonal to one another, meaning each when we have multiple components they must be 90$\deg$ from each other (independent features guarantees this).
+	\begin{lstlisting}
+	from sklearn.decomposition import PCA
+	from sklearn.preprocessing import StandardScaler
+	from sklearn.ensemble import RandomForestClassifier
+	from sklearn.model_selection import train_test_split
+	from sklearn.metrics import accuracy_score
+	
+	def fit_rfc(X,y):
+		X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+		clf = RandomForestClassifier(n_estimators=100, max_depth=None)
+		clf.fit(X_train, y_train)
+		y_preds = clf.predict(X_test)
+		acc = accuracy_score(y_test, y_preds)
+		return acc
+	
+	def do_pca(n_components, data):
+		X = StandardScaler().fit_transform(data)
+		pca = PCA(n_components) # pca object
+		X_pca = pca.fit_transform(X) # new matrix of data
+		return pca, X_pca
+	
+	def pca_optimize(X, y, n_components=100):
+		accs = []
+		for component in range(3, n_components):
+			pca, X_pca = do_pca(component, X)
+			accs.append(fit_rfc(X_pca, y))
+		return accs
+	
+	def plot_pca_acc(acc):
+		plt.plot(range(3, len(acc)+3), acc)
+		plt.title('PCA N-Components Accuracy')
+		plt.ylabel('Accuracy')
+		plt.xlabel('N-Components')
+		return None
+	
+	acc = pca_optimize(X,y,50)
+	plot_pca_acc(acc) # around 15 components we begin to level off around 0.91 
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{Interpreting PCA}: the PCA object we create has many methods we can use to interpret the new components.\vspace*{2mm}\\
+	\textbf{Explained Variance}: the \textit{explained\_variance\_ratio\_} method will tell us how much variance each components represents. Note that the first component always explains the most amount of variability. Summing up all of the variance among components tells use how much of the total variability the components capture. There are called \textit{eigenvalues} \vspace*{2mm}\\
+	\textbf{Component Weights}: the \textit{components\_} method returns a vector that explains the weight given to each component. For an image, this is the weight given to each pixel (which tells use the most important aspect of the image). There are called \textit{eigenvectors}. \newpage
+%%%% PAGE 28 %%%%
+
+	\begin{lstlisting}
+	df = pd.read_csv('./data/cars.csv')
+	
+	# We want to components to explain 85% of variability of original datasets
+	for ncomp in range(3,30):
+		pca, X_pca = do_pca(ncomp, df)
+			if sum(pca.explained_variance_ratio_) > 0.85:
+				break
+	
+	pca.n_components # 6
+	sum(pca.explained_variance_ratio_) # 0.8683
+	
+	# Create a df and visualize results (see pca_helper_functions in Files folder)
+	pca_results(df, pca)
+	\end{lstlisting} \vspace*{2mm}
+	
+	\subsection{Random Projections and ICA}
+	
+
 	
 	
 	
