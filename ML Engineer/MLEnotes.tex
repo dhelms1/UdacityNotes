@@ -61,6 +61,33 @@
 	\begin{spacing}{1.1}
 	\section{Software Engineering Fundamentals}
 	\subsection{Software Engineering Practices}
+	\textbf{Modular Code}: putting functions into separate files to be imported into workspace. \vspace*{2mm}\\
+	\textbf{Refactoring}: restructuring your code to improve its internal structure, without changing its external functionality. This means cleaning and modularizing your program after it is working. \vspace*{2mm}\\
+	\textbf{Optimization}: we want to write efficient code, so this can be either fast execution or taking up less space in memory. We also want to \textit{vectorize} our code for speed and amount of coding used.
+	\begin{lstlisting}
+	for book in recent_books:
+		if book in coding_books:
+			recent_coding_books.append(book) # 16.63 sec
+			
+	recent_coding_books = np.intersect1d(recent_books, coding_books) # 0.035 sec
+	recent_coding_books = set(recent_books).intersection(coding_books) # 0.0097 sec
+	
+	for cost in gift_costs:
+		if cost < 25:
+			total_price += cost * 1.08  # 5.55 sec
+			
+	total_price = np.sum(gift_costs[gift_costs < 25] * 1.08) # 0.084 sec
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{Git Branches}: to switch to a branch in a repository you use \textit{git checkout (branchname)}.\\
+	To create and switch to a new branch you use \textit{git checkout -b (newbranch)}.\\
+	When in main branch, merge another branch by using \textit{git merge -no-ff (branchname)}.\vspace*{2mm}\\
+	\textbf{Previous Code}: to see previous commits use \textit{git log}.\\
+	Using the commit message number, open the code using a new branch \textit{git checkout (commit\#)}.\vspace*{2mm}\\
+	\textbf{Unit Testing}: \href{https://docs.pytest.org/en/latest/getting-started.html}{pytest} is a tool we can use to make sure our function is outputting correctly. We can create a test file starting with \textit{test\_} and we get a . if we pass and an F if we fail.\vspace*{2mm}\\
+	\textbf{Test Driven Deployment}: writing tests before you write the code that’s being tested. Your test would fail at first, and you’ll know you’ve finished implementing a task when this test passes.\vspace*{2mm}
+	
+	\subsection{Object-Oriented Programming}
+	
 	
 	
 	
