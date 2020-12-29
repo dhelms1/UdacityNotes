@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7250 64-bit) (preloaded format=pdflatex 2020.2.10)  26 DEC 2020 07:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7250 64-bit) (preloaded format=pdflatex 2020.2.10)  29 DEC 2020 14:26
 entering extended mode
 **./MLEnotes.tex
 (MLEnotes.tex
@@ -524,46 +524,39 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
  [1
 
-{C:/Users/derek/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 98.
-pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
-been already used, duplicate ignored
+{C:/Users/derek/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]pdfTeX warni
+ng (ext4): destination with the same identifier (name{page.1}) has been already
+ used, duplicate ignored
 <to be read again> 
                    \relax 
-l.98 \end{document}
-                    [1]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 98.
+l.98 ...textit{pip install (packagename)}	\newpage
+                                                   [1] [2]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 139.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 139.
  (MLEnotes.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 98.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 98.
-
-
-Package rerunfilecheck Warning: File `MLEnotes.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `MLEnotes.out':
-(rerunfilecheck)             Before: 5AF99F50CD66B15993CB69DC88860512;147
-(rerunfilecheck)             After:  C1AAF6D51386ACB97BF063B6A7EC5F3F;223.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 98.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 139.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 139.
+Package rerunfilecheck Info: File `MLEnotes.out' has not changed.
+(rerunfilecheck)             Checksum: EFDA0108392F90049A32E84AB835FBAF;366.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 139.
  ) 
 Here is how much of TeX's memory you used:
- 9780 strings out of 492484
- 136992 string characters out of 3131051
- 468034 words of memory out of 3000000
- 13943 multiletter control sequences out of 15000+200000
+ 9796 strings out of 492484
+ 137192 string characters out of 3131051
+ 470034 words of memory out of 3000000
+ 13953 multiletter control sequences out of 15000+200000
  13855 words of font info for 51 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,5n,47p,319b,1353s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 39i,5n,47p,518b,1353s stack positions out of 5000i,500n,10000p,200000b,50000s
 <D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><D:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><D:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><D:/Program Files/MiKTe
 X 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><D:/Program Files/MiKTeX 2.9/font
 s/type1/public/amsfonts/cm/cmti10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/
 public/amsfonts/cm/cmtt9.pfb>
-Output written on MLEnotes.pdf (2 pages, 93081 bytes).
+Output written on MLEnotes.pdf (3 pages, 112388 bytes).
 PDF statistics:
- 69 PDF objects out of 1000 (max. 8388607)
- 19 named destinations out of 1000 (max. 500000)
- 17 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 97 PDF objects out of 1000 (max. 8388607)
+ 25 named destinations out of 1000 (max. 500000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

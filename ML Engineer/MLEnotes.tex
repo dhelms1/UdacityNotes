@@ -84,9 +84,50 @@
 	\textbf{Previous Code}: to see previous commits use \textit{git log}.\\
 	Using the commit message number, open the code using a new branch \textit{git checkout (commit\#)}.\vspace*{2mm}\\
 	\textbf{Unit Testing}: \href{https://docs.pytest.org/en/latest/getting-started.html}{pytest} is a tool we can use to make sure our function is outputting correctly. We can create a test file starting with \textit{test\_} and we get a . if we pass and an F if we fail.\vspace*{2mm}\\
-	\textbf{Test Driven Deployment}: writing tests before you write the code that’s being tested. Your test would fail at first, and you’ll know you’ve finished implementing a task when this test passes.\vspace*{2mm}
+	\textbf{Test Driven Deployment}: writing tests before you write the code that’s being tested. Your test would fail at first, and you’ll know you’ve finished implementing a task when this test passes.\vspace*{2mm}\\
+	\textbf{Virtual Environment}: when creating packages, you want to run a program in a virtual environment so the install does not mess up with original Python installation. Doing this means all packages installed in the virtual environment only exist within it, and will be removed after closing it. \\
+	To create the virtual environment we run \textit{python -m venv (env\_name)} \\
+	To move to the virtual environment we run \textit{source (env\_name)/bin/activate}\vspace*{2mm}\\
+	\textbf{Creating Packages}: in the main directory, we have a \textit{setup.py} file and a package folder containing all necessary files. The \textit{setup.py} contains information about the package using \textit{setup} from \textit{setuptools}. In the package folder, we have our Python modules and the \textit{\_\_init\_\_.py} file. When in the main directory, use \textit{pip install .} to install package into environment (on a personal machine use virtual environment above).\\
+	To update a package after changes are made, run \textit{pip install -\,- upgrade}\vspace*{2mm}\\
+	\textbf{Uploading Packages}: within the package directory including all Python modules you also need a \textit{README.md}, \textit{license.txt}, and \textit{setup.cfg} files. \href{https://packaging.python.org/tutorials/packaging-projects/}{Click here} to see how to set these up.\\
+	To create the distribution package, run \textit{python setup.py sdist}\\
+	To upload to test.pypi run \textit{twine upload -\,-repository-url https://test.pypi.org/legacy/ dist/*}\\
+	To install from test.pypi run \textit{pip install --index-url https://test.pypi.org/simple/ (packagename)}\\
+	To upload to pypi run \textit{twine upload dist/*}\\
+	To install package from pypi you now run \textit{pip install (packagename)}	\newpage
+%%%% PAGE 2 %%%%
 	
-	\subsection{Object-Oriented Programming}
+	\section{Machine Learning in Production}
+	\subsection{Introduction to Deployment}
+	\textbf{Workflow}: explore/process data, modeling, and deployment. \href{https://docs.aws.amazon.com/sagemaker/latest/dg/how-it-works-mlconcepts.html}{Click here} for AWS workflow.\vspace*{2mm}\\
+	\textbf{Production Environment}: the application that customers use to receive predictions from the deployed model.\vspace*{2mm}\\
+	\textbf{Endpoint}: the interface to the model which allows the application to send user data to the model and receives predictions back from the model about that data. Think of this as the python program being the application and a function calling the model being the endpoint. \vspace*{2mm}\\
+	\textbf{Application}: a web or software application that enables the application users to use the model to retrieve predictions. \vspace*{2mm}\\
+	\textbf{Container}: a standardized collection/bundle of software that is to be used for the specific purpose of running an application. This is used to create the computational environments for the model and application. A common container is \textit{Docker}. \\
+	\hspace*{3mm} - \textbf{Layers} (bottom to top): infrastructure (data center), operating system, container engine (Docker), \\ \hspace*{6mm} libraries/binaries, and application. \\
+	\hspace*{3mm} - \textbf{Script}: the instructions used to create a container (\href{https://hub.docker.com/search?q=&type=image}{dockerfiles}). \vspace*{2mm}\\
+	\textbf{Deployment}: versioning (indicate a models current version), monitoring (model continues to meet performance metrics), update (when model fails to meet performance use new data to update), routing (test model performance compared to other variants), and predictions (\textit{on-demand} used for customers vs \textit{batch} used in business).\vspace*{2mm}
+	
+	\subsection{Machine Learning in Production}
+	\begin{center}
+	\color{darkgray} NOTE: refer to ``Boston Housing - XGBoost (Batch Transform) - High Level" for sample code. \color{black}
+	\end{center}
+	\textbf{Session} (\href{https://sagemaker.readthedocs.io/en/latest/session.html}{doc}): a special object that allows you to do things like manage data in S3 and create and train any models. We use this throughout the notebook workspace in SageMaker. \vspace*{2mm}\\
+	\textbf{Role}: the IAM role created when you create a notebook, this defines how data that your notebook uses/creates will be stored. We will use this later for training. \vspace*{2mm}\\
+	\textbf{S3 Bucket}: When a training job is constructed using SageMaker, a container is executed which performs the training operation and accesses data in S3. This means that we need to upload the data we want to use for training to S3. When we perform a batch transform job, SageMaker expects the input data to be stored on S3. We upload data to S3 using the session object.\vspace*{2mm}\\
+	\textbf{Estimators} (\href{https://sagemaker.readthedocs.io/en/latest/estimators.html}{doc}): an object that specifies some details about how a model will be trained. It gives you the ability to create and deploy a model. It requires a container which can be obtained from the session object. We can also set hyperparameters on this estimator object. \vspace*{2mm}\\
+	\textbf{Input}: we specify where in S3 and the type of the data that we will feed into our estimator object. \vspace*{2mm}\\
+	\textbf{Transformer} (\href{https://sagemaker.readthedocs.io/en/latest/transformer.html}{doc}): used to create a transform job and evaluate a trained model. We specify the location of the test data and the format it is in. We can then use the \textit{wait()} method to see the progress on testing and when we can resume coding. \vspace*{2mm}\\
+	\textbf{Predictions}: predictions are stored on S3, but we can download them into a specific directory. 
+	\begin{lstlisting}
+	!aws s3 cp --recursive $xgb_transformer.output_path $data_dir
+	\end{lstlisting} \newpage
+%%%% PAGE 3 %%%%
+
+	
+	
+	
 	
 	
 	
