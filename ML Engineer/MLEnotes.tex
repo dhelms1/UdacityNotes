@@ -109,24 +109,126 @@
 	\hspace*{3mm} - \textbf{Script}: the instructions used to create a container (\href{https://hub.docker.com/search?q=&type=image}{dockerfiles}). \vspace*{2mm}\\
 	\textbf{Deployment}: versioning (indicate a models current version), monitoring (model continues to meet performance metrics), update (when model fails to meet performance use new data to update), routing (test model performance compared to other variants), and predictions (\textit{on-demand} used for customers vs \textit{batch} used in business).\vspace*{2mm}
 	
-	\subsection{Machine Learning in Production}
+	\subsection{Building a Model with SageMaker}
 	\begin{center}
-	\color{darkgray} NOTE: refer to ``Boston Housing - XGBoost (Batch Transform) - High Level" for sample code. \color{black}
+	\color{darkgray} NOTE: refer to ``BH - XGBoost (Batch Transform) - Low Level" for details about API. \color{black}
 	\end{center}
-	\textbf{Session} (\href{https://sagemaker.readthedocs.io/en/latest/session.html}{doc}): a special object that allows you to do things like manage data in S3 and create and train any models. We use this throughout the notebook workspace in SageMaker. \vspace*{2mm}\\
-	\textbf{Role}: the IAM role created when you create a notebook, this defines how data that your notebook uses/creates will be stored. We will use this later for training. \vspace*{2mm}\\
-	\textbf{S3 Bucket}: When a training job is constructed using SageMaker, a container is executed which performs the training operation and accesses data in S3. This means that we need to upload the data we want to use for training to S3. When we perform a batch transform job, SageMaker expects the input data to be stored on S3. We upload data to S3 using the session object.\vspace*{2mm}\\
-	\textbf{Estimators} (\href{https://sagemaker.readthedocs.io/en/latest/estimators.html}{doc}): an object that specifies some details about how a model will be trained. It gives you the ability to create and deploy a model. It requires a container which can be obtained from the session object. We can also set hyperparameters on this estimator object. \vspace*{2mm}\\
-	\textbf{Input}: we specify where in S3 and the type of the data that we will feed into our estimator object. \vspace*{2mm}\\
-	\textbf{Transformer} (\href{https://sagemaker.readthedocs.io/en/latest/transformer.html}{doc}): used to create a transform job and evaluate a trained model. We specify the location of the test data and the format it is in. We can then use the \textit{wait()} method to see the progress on testing and when we can resume coding. \vspace*{2mm}\\
-	\textbf{Predictions}: predictions are stored on S3, but we can download them into a specific directory. 
 	\begin{lstlisting}
-	!aws s3 cp --recursive $xgb_transformer.output_path $data_dir
-	\end{lstlisting} \newpage
+	import sagemaker
+	from sagemaker import get_execution_role
+	from sagemaker.amazon.amazon_estimator import get_image_uri
+	from sagemaker.predictor import csv_serializer
+	\end{lstlisting}\vspace*{2mm}
+	\textbf{Session} (\href{https://sagemaker.readthedocs.io/en/latest/session.html}{doc}): a special object that allows you to do things like manage data in S3 and create and train any models. We use this throughout the notebook workspace in SageMaker.
+	\begin{lstlisting}
+	session = sagemaker.Session() # create session object to be used throughout workspace
+	\end{lstlisting}\vspace*{2mm}
+	\textbf{Role}: the IAM role created when you create a notebook, this defines how data that your notebook uses/creates will be stored. We will use this later for training. 
+	\begin{lstlisting}
+	role = get_execution_role() # create IAM role object to be used throughout workspace
+	\end{lstlisting}\vspace*{2mm}
+	\textbf{S3 Bucket}: When a training job is constructed using SageMaker, a container is executed which performs the training operation and accesses data in S3. This means that we need to upload the data we want to use to S3. When we perform a batch transform job, SageMaker expects the input data to be stored on S3. We upload data to S3 using the session object after saving the DataFrame to a csv file. \newpage
 %%%% PAGE 3 %%%%
 
+	\begin{lstlisting}
+	prefix = 'boston-xgboost-HL'
 	
+	test_location = session.upload_data(os.path.join(data_dir, 'test.csv'), 
+	                                    key_prefix=prefix)
+	val_location = session.upload_data(os.path.join(data_dir, 'validation.csv'), 
+	                                   key_prefix=prefix)
+	train_location = session.upload_data(os.path.join(data_dir, 'train.csv'), 
+	                                     key_prefix=prefix)	
+    \end{lstlisting}\vspace*{2mm}
+	\textbf{Estimators} (\href{https://sagemaker.readthedocs.io/en/latest/estimators.html}{doc}): an object that specifies some details about how a model will be trained. It gives you the ability to create and deploy a model. It requires a container which can be obtained from the session object. We can also set hyperparameters on this estimator object. 
+	\begin{lstlisting}
+	# Construct the image name for the training container.
+	container = get_image_uri(session.boto_region_name, 'xgboost')
+
+	xgb = sagemaker.estimator.Estimator(container, # Image name of the training container
+					role, # The IAM role to use
+					train_instance_count=1, # The number of instances to use for training
+					train_instance_type='ml.m4.xlarge', # Type of instance to use for training
+					output_path='s3://{}/{}/output'.format(session.default_bucket(), prefix),
+					# output_path is where to save the output (the model artifacts)
+					sagemaker_session=session) # The current SageMaker session
 	
+	xgb.set_hyperparameters(...)	 # set hyperparameters here			
+	\end{lstlisting}\vspace*{2mm}
+	\textbf{Input}: we specify where in S3 and the type of the data that we will feed into our estimator object.
+	\begin{lstlisting}
+	# A wrapper around the location of our train and validation data, to make sure that
+	# SageMaker knows our data is in csv format.
+	s3_input_train = sagemaker.s3_input(s3_data=train_location, content_type='csv')
+	s3_input_validation = sagemaker.s3_input(s3_data=val_location, content_type='csv')
+	
+	xgb.fit({'train': s3_input_train, 'validation': s3_input_validation})
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{Transformer} (\href{https://sagemaker.readthedocs.io/en/latest/transformer.html}{doc}): used to create a transform job and evaluate a trained model. We specify the location of the test data and the format it is in. We can then use the \textit{wait()} method to see the progress on testing and when we can resume coding. 
+	\begin{lstlisting}
+	xgb_transformer = xgb.transformer(instance_count = 1, instance_type = 'ml.m4.xlarge')
+	xgb_transformer.transform(test_location, content_type='text/csv', split_type='Line')
+	xgb_transformer.wait()
+	\end{lstlisting}\vspace*{2mm}
+	\textbf{Predictions}: predictions are stored on S3, but we can download them into a specific directory.
+	\begin{lstlisting}
+	!aws s3 cp --recursive $xgb_transformer.output_path $data_dir
+	Y_pred = pd.read_csv(os.path.join(data_dir, 'test.csv.out'), header=None)
+	\end{lstlisting} \newpage
+%%%% PAGE 4 %%%%
+	
+	\subsection{Deploying and Using a Model}
+	\begin{center}
+	\color{darkgray} NOTE: refer to ``BH - XGBoost (Deploy) - Low Level" for details about API. \color{black}
+	\end{center}
+	\textbf{Deploying}: using the high level API we can use the \textit{deploy} method to create an endpoint for our model. Note that this creates a compute instances and needs to be shutdown when not in use. \vspace*{2mm}\\
+	\textbf{Predicting}: Now that we have deployed our endpoint, we can send the testing data to it and get back the inference results. When using the created endpoint it is important to know that we are limited in the amount of information we can send in each call (note here that the data is small enough to send in one file, but for larger files we need to break it up and send in chunks).
+	\begin{lstlisting}
+	# Deploy model and created endpoint for predicting
+	xgb_predictor = xgb.deploy(initial_instance_count=1, instance_type='ml.m4.xlarge')
+	
+	# We need to tell the endpoint what format the data we are sending is in
+	xgb_predictor.content_type = 'text/csv'
+	xgb_predictor.serializer = csv_serializer
+	Y_pred = xgb_predictor.predict(X_test.values).decode('utf-8')
+	
+	# Y_pred is currently a comma delimited string and so we would like to break it up
+	# as a numpy array.
+	Y_pred = np.fromstring(Y_pred, sep=',')
+	
+	xgb_predictor.delete_endpoint() # shut down endpoint after no longer in use
+	\end{lstlisting} \vspace*{1mm}
+	
+	\subsubsection{Deploying to a Web App}
+	\begin{center}
+	\color{darkgray} NOTE: refer to ``IMDB - XGBoost - Deploy" for more details about deployment code. \color{black}
+	\end{center}
+	\textbf{Overview}: Only authenticated users can access the SageMaker API, so we will create a new endpoint which does not require authentication and which acts as a proxy for the SageMaker endpoint. We can do this through the \textit{Lambda} and \textit{API Gateway} services, which works in the following steps: a user submits data and our app sends it to the API Gateway endpoint, the API sends this to the Lambda function, Lambda then processes and sends the data to our model, our model makes inference and sends the prediction back through, and finally the data is displayed to the user. \vspace*{2mm}\\
+	\textbf{Response}: After accessing the SageMaker runtime, we can invoke the endpoint to create and HTML response that contains the predicted response in the `Body' section. 
+	\begin{lstlisting}
+	import boto3
+	
+	# Create the endpoint backup (Lambda does not have access to this)
+	xgb_predictor = xgb.deploy(initial_instance_count=1, instance_type='ml.m4.xlarge')
+	
+	# Get handle for SageMaker runtime (API for Lambda to use)
+	runtime = boto3.Session().client('sagemaker-runtime')
+	
+	response = runtime.invoke_endpoint(EndpointName = xgb_predictor.endpoint,
+	                                   ContentType = 'text/csv', # Data format
+	                                   Body = ...) # The data to be predicted on
+	
+	response = response['Body'].read().decode('utf-8')                                  
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{Lambda}: a service which uses a Python code file and executes whenever a chosen trigger occurs. When it is executed it will receive the data, perform any sort of processing that is required, send the data to the SageMaker endpoint we've created and then finally return the result. \newpage
+%%%% PAGE 5 %%%%
+
+	\noindent \textbf{API Gateway}: a service that allows you to create HTTP endpoints (url addresses) which are connected to other AWS services. One of the benefits to this is that you get to decide what credentials, if any, are required to access these endpoints (in our case it is open to the public).
+	\begin{center}
+		\color{darkgray} NOTE: refer to ``IMDB - XGBoost - Deploy" for details about how to set up Lambda and Gateway. \color{black}
+	\end{center} \vspace*{1mm}
+
+	\subsection{Hyperparameter Tuning}
 	
 	
 	
