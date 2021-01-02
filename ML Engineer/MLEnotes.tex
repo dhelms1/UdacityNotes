@@ -229,6 +229,115 @@
 	\end{center} \vspace*{1mm}
 
 	\subsection{Hyperparameter Tuning}
+	\begin{center}
+	\color{darkgray} NOTE: refer to ``IMDB - XGBoost (Hyperparameter) - Low Level" for details about low level API. \color{black}
+	\end{center} \vspace*{1mm}
+	\textbf{Base Model}: we create a model similar to how we have done previously, which will be our \textit{base model} that SageMaker will tune for us. We also set hyperparameters for the base model similar to how we have done before. \textit{(See 2.2 for how to set up base model)}. \vspace*{2mm}\\
+	\textbf{Tune Object}: We create a hyperparameter tuning object where we pass a model, the measurement metric, the objective, how many models to fit, and ranges for our hyperparameters we want to tune. We then fit this object and wait for training to finish in order to find the best model. 
+	\begin{lstlisting}
+	from sagemaker.tuner import IntegerParameter, ContinuousParameter, HyperparameterTuner
+	
+	xgb_hyperparameter_tuner = HyperparameterTuner(estimator = xgb, # Base model
+				objective_metric_name = 'validation:rmse', # Metric used to compare models
+				objective_type = 'Minimize', # Minimize or maximize the metric
+				max_jobs = 20, # The total number of models to train
+				max_parallel_jobs = 3, # The number of models to train in parallel
+				hyperparameter_ranges = { # Hyperparameters ranges to be tuned
+					'max_depth': IntegerParameter(3, 12),
+					'eta'      : ContinuousParameter(0.05, 0.5),
+					'min_child_weight': IntegerParameter(2, 8),
+					'subsample': ContinuousParameter(0.5, 0.9),
+					'gamma': ContinuousParameter(0, 10),
+				})
+	
+	s3_input_train = sagemaker.s3_input(s3_data=train_location, content_type='csv')
+	s3_input_validation = sagemaker.s3_input(s3_data=val_location, content_type='csv')
+	
+	xgb_hyperparameter_tuner.fit({'train': s3_input_train, 
+		                          'validation': s3_input_validation})
+	xgb_hyperparameter_tuner.wait()
+	
+	\end{lstlisting}\vspace*{2mm}
+	\textbf{Best Model}: after tuning, we can then access the best fit model and attach it to an estimator object which we can use for predicting. We will create a transform object from this model, which we then pass our testing data to.
+	\begin{lstlisting}
+	# Attach the best model to an Estimator to create a new model
+	xgb_attached = sagemaker.estimator.Estimator.attach(xgb_hyperparameter_tuner.
+	                                                    best_training_job())
+	
+	# Create transformer object using the hypertuned model
+	xgb_transformer = xgb_attached.transformer(instance_count = 1, 
+	                                           instance_type = 'ml.m4.xlarge')
+	xgb_transformer.transform(test_location, content_type='text/csv', split_type='Line')
+	xgb_transformer.wait()
+	\end{lstlisting} \newpage
+%%%% PAGE 6 %%%%
+
+	\subsection{Updating a Model}
+	\subsubsection{A/B Testing}
+	\begin{center}
+	\color{darkgray} NOTE: refer to ``BH - Updating an Endpoint" for details about setting up models. \color{black}
+	\end{center} \vspace*{1mm}
+	\textbf{A/B Testing}: in some cases we may create two separate models for the same problem and want to see which performs better. By using the low level endpoint API we can set it up so that data is split and sent to both models. \vspace*{2mm}\\
+	\textbf{Endpoint Setup}: SageMaker provide functionality for this by letting us pass multiple models in the ProductionVariants when creating an endpoint. The amount of data sent to each model is determined by the weight we assign it (assigned weight divided by total weight of all models).
+	\begin{lstlisting}
+	# Give our endpoint configuration a name which should be unique
+	combined_endpoint_config_name = "boston-combined-endpoint-config-" + 
+	                                strftime("%Y-%m-%d-%H-%M-%S", gmtime())
+	
+	# We then ask SageMaker to construct the endpoint configuration
+	combined_endpoint_config_info = session.sagemaker_client.create_endpoint_config(
+			EndpointConfigName = combined_endpoint_config_name,
+			ProductionVariants = [
+					{ # First we include the linear model
+						"InstanceType": "ml.m4.xlarge",
+						"InitialVariantWeight": 1, # 1/2 of total data
+						"InitialInstanceCount": 1,
+						"ModelName": linear_model_name,
+						"VariantName": "Linear-Model"
+					}, { # Second we include the xgb model
+						"InstanceType": "ml.m4.xlarge",
+						"InitialVariantWeight": 1, # 1/2 of total data
+						"InitialInstanceCount": 1,
+						"ModelName": xgb_model_name,
+						"VariantName": "XGB-Model"
+					}])
+	
+	# Again, we need a unique name for our endpoint
+	endpoint_name = "boston-update-endpoint-" + strftime("%Y-%m-%d-%H-%M-%S", gmtime())
+	
+	# Then we can deploy our endpoint
+	endpoint_info = session.sagemaker_client.create_endpoint(
+			EndpointName = endpoint_name,
+			EndpointConfigName = combined_endpoint_config_name)
+	
+	endpoint_dec = session.wait_for_endpoint(endpoint_name)
+	\end{lstlisting} \vspace*{2mm}
+	\textbf{Updating Endpoint}: After running and A/B we determine which model best suits our problem, and we only want to send data to one model. We can update the endpoint without having to shut it down by using the SageMaker function \textit{update}, which starts a new endpoint in the background and replaces the existing endpoint once the new one is running. This means no down time.
+	\begin{lstlisting}
+	session.sagemaker_client.update_endpoint(
+			EndpointName=endpoint_name, # endpoint with both models
+			EndpointConfigName=linear_endpoint_config_name) # endpoint from linear model
+	
+	endpoint_dec = session.wait_for_endpoint(endpoint_name) # wait for endpoint to update
+	\end{lstlisting} \newpage
+%%%% PAGE 7 %%%%
+
+	\subsubsection{Data Distribution Change}
+	\begin{center}
+	\color{darkgray} NOTE: refer to ``IMDB - XGBoost - Updating a Model" for more details. \color{black}
+	\end{center} \vspace*{1mm}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
