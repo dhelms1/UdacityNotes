@@ -7,5 +7,10 @@
 \BOOKMARK [3][-]{subsubsection.2.3.1}{Deploying to a Web App}{subsection.2.3}% 7
 \BOOKMARK [2][-]{subsection.2.4}{Hyperparameter Tuning}{section.2}% 8
 \BOOKMARK [2][-]{subsection.2.5}{Updating a Model}{section.2}% 9
-\BOOKMARK [3][-]{subsubsection.2.5.1}{A/B Testing}{subsection.2.5}% 10
+\BOOKMARK [3][-]{subsubsection.2.5.1}{Multiple Models}{subsection.2.5}% 10
 \BOOKMARK [3][-]{subsubsection.2.5.2}{Data Distribution Change}{subsection.2.5}% 11
+\BOOKMARK [1][-]{section.3}{ML Case Studies}{}% 12
+\BOOKMARK [2][-]{subsection.3.1}{Population Segmentation \(Unsupervised\)}{section.3}% 13
+\BOOKMARK [2][-]{subsection.3.2}{Payment Fraud Detection \(Supervised\)}{section.3}% 14
+\BOOKMARK [2][-]{subsection.3.3}{Custom Models \(PyTorch\)}{section.3}% 15
+\BOOKMARK [2][-]{subsection.3.4}{Time-Series Forecasting}{section.3}% 16

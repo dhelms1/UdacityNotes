@@ -17,7 +17,7 @@
 \hypersetup{
 	colorlinks=true,
 	linkcolor=blue,
-	urlcolor=blue,
+	urlcolor=purple,
 }
 \titleformat*{\section}{\LARGE\bfseries\filcenter}
 \titleformat*{\subsection}{\Large\bfseries}
@@ -111,7 +111,7 @@
 	
 	\subsection{Building a Model with SageMaker}
 	\begin{center}
-	\color{darkgray} NOTE: refer to ``BH - XGBoost (Batch Transform) - Low Level" for details about API. \color{black}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample\_code/BH\%20-\%20XGBoost\%20(Batch\%20Transform)\%20-\%20Low\%20Level.html}{BH - XGBoost (Batch Transform) - Low Level} for details about API. \color{black}
 	\end{center}
 	\begin{lstlisting}
 	import sagemaker
@@ -179,7 +179,7 @@
 	
 	\subsection{Deploying and Using a Model}
 	\begin{center}
-	\color{darkgray} NOTE: refer to ``BH - XGBoost (Deploy) - Low Level" for details about API. \color{black}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample\_code/BH\%20-\%20XGBoost\%20(Deploy)\%20-\%20Low\%20Level.html}{BH - XGBoost (Deploy) - Low Level} for details about API. \color{black}
 	\end{center}
 	\textbf{Deploying}: using the high level API we can use the \textit{deploy} method to create an endpoint for our model. Note that this creates a compute instances and needs to be shutdown when not in use. \vspace*{2mm}\\
 	\textbf{Predicting}: Now that we have deployed our endpoint, we can send the testing data to it and get back the inference results. When using the created endpoint it is important to know that we are limited in the amount of information we can send in each call (note here that the data is small enough to send in one file, but for larger files we need to break it up and send in chunks).
@@ -201,7 +201,7 @@
 	
 	\subsubsection{Deploying to a Web App}
 	\begin{center}
-	\color{darkgray} NOTE: refer to ``IMDB - XGBoost - Deploy" for more details about deployment code. \color{black}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample\_code/IMDB\%20-\%20XGBoost\%20-\%20Deploy.html}{IMDB - XGBoost - Deploy} for more details about deployment code. \color{black}
 	\end{center}
 	\textbf{Overview}: Only authenticated users can access the SageMaker API, so we will create a new endpoint which does not require authentication and which acts as a proxy for the SageMaker endpoint. We can do this through the \textit{Lambda} and \textit{API Gateway} services, which works in the following steps: a user submits data and our app sends it to the API Gateway endpoint, the API sends this to the Lambda function, Lambda then processes and sends the data to our model, our model makes inference and sends the prediction back through, and finally the data is displayed to the user. \vspace*{2mm}\\
 	\textbf{Response}: After accessing the SageMaker runtime, we can invoke the endpoint to create and HTML response that contains the predicted response in the `Body' section. 
@@ -225,12 +225,12 @@
 
 	\noindent \textbf{API Gateway}: a service that allows you to create HTTP endpoints (url addresses) which are connected to other AWS services. One of the benefits to this is that you get to decide what credentials, if any, are required to access these endpoints (in our case it is open to the public).
 	\begin{center}
-		\color{darkgray} NOTE: refer to ``IMDB - XGBoost - Deploy" for details about how to set up Lambda and Gateway. \color{black}
+		\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample\_code/IMDB\%20-\%20XGBoost\%20-\%20Deploy.html}{IMDB - XGBoost - Deploy} for details about how to set up Lambda and Gateway. \color{black}
 	\end{center} \vspace*{1mm}
 
 	\subsection{Hyperparameter Tuning}
 	\begin{center}
-	\color{darkgray} NOTE: refer to ``IMDB - XGBoost (Hyperparameter) - Low Level" for details about low level API. \color{black}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample\_code/BH\%20-\%20XGBoost\%20(Hyperparameter)\%20-\%20Low\%20Level.html}{IMDB - XGBoost (Hyperparameter) - Low Level} for details about low level API. \color{black}
 	\end{center} \vspace*{1mm}
 	\textbf{Base Model}: we create a model similar to how we have done previously, which will be our \textit{base model} that SageMaker will tune for us. We also set hyperparameters for the base model similar to how we have done before. \textit{(See 2.2 for how to set up base model)}. \vspace*{2mm}\\
 	\textbf{Tune Object}: We create a hyperparameter tuning object where we pass a model, the measurement metric, the objective, how many models to fit, and ranges for our hyperparameters we want to tune. We then fit this object and wait for training to finish in order to find the best model. 
@@ -273,9 +273,9 @@
 %%%% PAGE 6 %%%%
 
 	\subsection{Updating a Model}
-	\subsubsection{A/B Testing}
+	\subsubsection{Multiple Models}
 	\begin{center}
-	\color{darkgray} NOTE: refer to ``BH - Updating an Endpoint" for details about setting up models. \color{black}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample\_code/BH\%20-\%20Updating\%20an\%20Endpoint.html}{BH - Updating an Endpoint} for details about setting up models. \color{black}
 	\end{center} \vspace*{1mm}
 	\textbf{A/B Testing}: in some cases we may create two separate models for the same problem and want to see which performs better. By using the low level endpoint API we can set it up so that data is split and sent to both models. \vspace*{2mm}\\
 	\textbf{Endpoint Setup}: SageMaker provide functionality for this by letting us pass multiple models in the ProductionVariants when creating an endpoint. The amount of data sent to each model is determined by the weight we assign it (assigned weight divided by total weight of all models).
@@ -324,16 +324,77 @@
 
 	\subsubsection{Data Distribution Change}
 	\begin{center}
-	\color{darkgray} NOTE: refer to ``IMDB - XGBoost - Updating a Model" for more details. \color{black}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample\_code/IMDB\%20-\%20XGBoost\%20-\%20Updating\%20a\%20Model.html}{IMDB - XGBoost - Updating a Model} for more details. \color{black}
 	\end{center} \vspace*{1mm}
+	\textbf{Change in Data}: sometimes the distribution of the data submitted to our model can change and in-turn, our model starts to perform worse at predicting. We can import new data, upload to S3, and use the transform object to gauge how our current model is performing on the new data. Explore the data (in this case, compare 5000 most common words in each dataset to each other and find the difference).\vspace*{2mm}\\
+	\textbf{Change the Model}: if we believe that something in our data has changed, we can create and train a new model to replace the existing one. We create new training and validation sets, save them, and upload to S3 to be used in the model. We create a new estimator and set the hyperparameters as well. We then fit the model to the new data, and use a transform object to test on the new data. We can also test the new model on the old test data to see how it performs.	\textit{Note that if we had deployed our XGBoost model like we did in the Web App notebook then we would need to implement this vocabulary change in the Lambda function as well.} \vspace*{2mm}\\
+	\textbf{Update the Model}:  we have a new model that we'd like to use instead of one that is already deployed. Furthermore, we are assuming that the model that is already deployed is being used in some sort of application. As a result, what we want to do is update the existing endpoint so that it uses our new model. Using the low level approach, we create a new endpoint configuration that we will update the existing one with.
+	\begin{lstlisting}
+	# Create unique name for the endpoint
+	new_xgb_endpoint_config_name = "sentiment-update-xgboost-endpoint-config-" + 
+	                               strftime("%Y-%m-%d-%H-%M-%S", gmtime())
+
+	# Set up the new endpoint configuration with the updated model
+	new_xgb_endpoint_config_info = session.sagemaker_client.create_endpoint_config(
+			EndpointConfigName = new_xgb_endpoint_config_name,
+			ProductionVariants = [{
+				"InstanceType": "ml.m4.xlarge",
+				"InitialVariantWeight": 1,
+				"InitialInstanceCount": 1,
+				"ModelName": new_xgb_transformer.model_name,
+				"VariantName": "XGB-Model"
+			}])
 	
+	# Update the endpoint
+	session.sagemaker_client.update_endpoint(EndpointName=xgb_predictor.endpoint, 
+			EndpointConfigName=new_xgb_endpoint_config_name)
 	
+	session.wait_for_endpoint(xgb_predictor.endpoint)                                       
+	\end{lstlisting} \newpage
+%%%% PAGE 8 %%%%
+
+	\section{ML Case Studies}
+	\subsection{Population Segmentation (Unsupervised)}
+	\begin{center}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample_code/case_studies/Pop_Segmentation.html}{Pop\_Segmentation} in the case\_studies folder for the code. \color{black}
+	\end{center}
+	\textbf{Population Segmentation}: segmenting the population based on shared demographic traits. We will use PCA to reduce the dimension of our data (from 34 to 7) and KMeans to group the population into clusters based on this. \vspace*{2mm}\\
+	\textbf{PCA}: attempts to reduce the number of features within a dataset while retaining the “principal components”, which are defined as \textit{weighted} combinations of existing features that: \vspace*{.5mm}\\	
+	\hspace*{3mm} 1. Are uncorrelated with one another, so you can treat them as independent features. \\
+	\hspace*{3mm} 2. Account for the largest possible variability in the data! \vspace*{.5mm}\\
+	So, depending on how many components we want to produce, the first one will be responsible for the largest variability on our data and the second component for the second-most variability, and so on. The idea is that components that cause a larger variance will help us to better differentiate between data points and (therefore) better separate data into clusters. \vspace*{2mm}\\
+	\textbf{SageMaker PCA}: we can reduce dimensionality with the built-in SageMaker model for PCA. We first must specify an IAM role and an S3 bucket to save model attributes. \href{https://sagemaker.readthedocs.io/en/latest/pca.html}{Click here} for the SageMaker documentation for the parameters that need to be passed to the model. An important note is that the \textit{num\_components} parameter is just one less than the total number of features, and we just choose how many features to keep later on. \vspace*{2mm}\\
+	\textbf{Formatting Training Data}: to prepare the data for a built-in model, we must convert the DataFrame to a NumPy array, then convert that into a RecordSet format. This is required for all built in models, and allows SageMaker to perform faster with large datasets.\vspace*{2mm}\\
+	\textbf{Heatmap}: since we can't visualize 7-dimensional data, we can use a heatmap to see which components carry the most weights for each cluster. This is one way to visualize results from PCA and clustering. We can also go backwards and see which original features makes up the components by plotting or creating a DataFrame. \vspace*{2mm}
+	\begin{center}
+	Follow \href{https://docs.aws.amazon.com/sagemaker/latest/dg/ex1-cleanup.html}{this link} for how to clean up after finishing a notebook.	
+	\end{center}
+
+	\subsection{Payment Fraud Detection (Supervised)}
+	\begin{center}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample_code/case_studies/Fraud_Detection.html}{Fraud\_Detection} in the case\_studies folder for the code. \color{black}
+	\end{center}
+	\textbf{LinearLearner}: binary classification, in which a line is separating two classes of data and effectively outputs labels; either 1 for data that falls above the line or 0 for points that fall on or below the line. We will use this to separate valid and fraudulent transactions. \vspace*{2mm}\\
+	\textbf{Precision}: the number of true positives (truly fraudulent transaction data, in this case) over all positives, and will be the higher when the amount of false positives is low. We optimize based on this if we do not want any valid transactions to be categorized as fraudulent.\vspace*{2mm}\\
+	\textbf{Recall}: the number of true positives over true positives plus false negatives and will be higher when the number of false negatives is low. We optimize based on this if we want to catch almost all cases of fraud, even if it means a higher number of false positives.\vspace*{2mm}\\
+	\textbf{Class Imbalance}: even if the model labels all of the data as valid, we will have a high accuracy (over 99\%) with only around 0.017\% of the data is fraudulent. We can balance classes by assigning a higher weight to the positive (fraudulent) examples, which SageMaker allows us to do. \newpage
+%%%% PAGE 9 %%%%
+
+	\noindent \textbf{Model tuning}: this is when we optimize a model based on a specific metric (accuracy, recall, precision, etc.). SageMaker provides us a number of ways to automatically do this. For the LinearLearner model, we can specify the model selection criteria as well as the target value. \vspace*{2mm}
 	
+	\subsection{Custom Models (PyTorch)}
+	\begin{center}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample_code/case_studies/Moon_Classification.html}{Moon\_Classification} in the case\_studies folder for the code. \color{black}
+	\end{center}
+	\textbf{Training Script}: in the \textit{train.py} file, we import the model created in \textit{model.py} and set up all code to be executed when fitting the estimator. This includes hyperparameters, loading data, saving the model, and defining any other functions needed for training. \vspace*{2mm}\\
+	\textbf{Estimator}: we first train an estimator, specifying the training script and any hyperparameters we want for our model. Note that this requires a \textit{train.py} file for an entry point. \vspace*{2mm}\\
+	\textbf{PyTorchModel}: for PyTorch, creating a model and an endpoint are separate (no \textit{deploy} function). We need to create a PyTorchModel object, which will use our estimators attributes from training and a \textit{predict.py} file. This is what we will use to create an endpoint.\vspace*{2mm}\\
+	\textbf{Endpoint}: we can then deploy our PyTorchModel object to create an endpoint which we can use to make predictions.\vspace*{2mm}
 	
-	
-	
-	
-	
+	\subsection{Time-Series Forecasting}
+	\begin{center}
+	\color{darkgray} NOTE: refer to \href{...}{Energy\_Consumption} in the case\_studies folder for the code. \color{black}
+	\end{center}
 	
 	
 	

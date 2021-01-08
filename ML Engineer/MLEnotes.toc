@@ -7,5 +7,10 @@
 \contentsline {subsubsection}{\numberline {2.3.1}Deploying to a Web App}{4}{subsubsection.2.3.1}%
 \contentsline {subsection}{\numberline {2.4}Hyperparameter Tuning}{5}{subsection.2.4}%
 \contentsline {subsection}{\numberline {2.5}Updating a Model}{6}{subsection.2.5}%
-\contentsline {subsubsection}{\numberline {2.5.1}A/B Testing}{6}{subsubsection.2.5.1}%
+\contentsline {subsubsection}{\numberline {2.5.1}Multiple Models}{6}{subsubsection.2.5.1}%
 \contentsline {subsubsection}{\numberline {2.5.2}Data Distribution Change}{7}{subsubsection.2.5.2}%
+\contentsline {section}{\numberline {3}ML Case Studies}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Population Segmentation (Unsupervised)}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Payment Fraud Detection (Supervised)}{8}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Custom Models (PyTorch)}{9}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Time-Series Forecasting}{9}{subsection.3.4}%
