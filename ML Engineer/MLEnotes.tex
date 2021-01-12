@@ -391,10 +391,44 @@
 	\textbf{PyTorchModel}: for PyTorch, creating a model and an endpoint are separate (no \textit{deploy} function). We need to create a PyTorchModel object, which will use our estimators attributes from training and a \textit{predict.py} file. This is what we will use to create an endpoint.\vspace*{2mm}\\
 	\textbf{Endpoint}: we can then deploy our PyTorchModel object to create an endpoint which we can use to make predictions.\vspace*{2mm}
 	
-	\subsection{Time-Series Forecasting}
+	\subsection{Time-Series Forecasting (RNN)}
 	\begin{center}
-	\color{darkgray} NOTE: refer to \href{...}{Energy\_Consumption} in the case\_studies folder for the code. \color{black}
+	\color{darkgray} NOTE: refer to \href{file:///E:/Documents/UdacityNotes/ML\%20Engineer/sample_code/case_studies/Energy_Consumption.html}{Energy\_Consumption} in the case\_studies folder for the code. \color{black}
 	\end{center}
+	\textbf{Forecasting}: looking at historical data and trying to predict the future.\vspace*{2mm}\\
+	\textbf{Context Length}: the amount of data recorded in the past that the algorithm will see as input. The longer the context length the better the model will be a predicting. \vspace*{2mm}\\
+	\textbf{Prediction Length}: using the context length to predict the pattern found in the context. In general, data closest to the prediction time frame will contain the information that is most influential in defining that prediction. \vspace*{2mm}\\
+	\textbf{DeepAR} (\href{https://docs.aws.amazon.com/sagemaker/latest/dg/deepar.html}{doc}): a supervised learning algorithm for forecasting scalar (one-dimensional) time series using recurrent neural networks (RNN). It looks at all the training time series and tries to identify similarities across them by randomly sampling training examples from them. See in-depth details about training \href{https://docs.aws.amazon.com/sagemaker/latest/dg/deepar_how-it-works.html}{here}. This algorithm is best for data that has recurring patterns. \vspace*{2mm}\\
+	\textbf{NaN Values}: since we are doing long-term forecasting, it is okay to fill \textit{NaN} values with the column mean. But for short-term analysis (hourly) we may just want to drop \textit{NaN} values.\vspace*{2mm}
+	
+	\subsection{Plagiarism Detector (Project Notes)}
+	\textbf{Containment}: features that look at a whole body of text and count of occurrences of words in text files. We calculate this using \textit{n-grams} (group of words) and the formula: $\frac{count(ngram_A)\,\cap\, count(ngram_S)}{count(ngram_A)}$. If the two texts have no n-grams in common, the containment will be 0, but if all their n-grams intersect then the containment will be 1.\vspace*{2mm}\\
+	\textbf{Longest Common Subsequence}: the longest sequence (left to right) that appears in both texts (words don't have to be continuous). \newpage
+%%%% PAGE 10 %%%%
+
+	\section{NLP Fundamentals}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	\newpage
+%%%% PAGE __ %%%%
+
+	\section{Convolutional Neural Networks}
+	
+	
 	
 	
 	
