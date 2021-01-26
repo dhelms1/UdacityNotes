@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7250 64-bit) (preloaded format=pdflatex 2020.2.10)  25 JAN 2021 14:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7250 64-bit) (preloaded format=pdflatex 2020.2.10)  26 JAN 2021 09:04
 entering extended mode
 **./final_report.tex
 (final_report.tex
@@ -543,7 +543,7 @@ LaTeX Info: Redefining \nameref on input line 30.
 \@outlinefile=\write3
 \openout3 = `final_report.out'.
 
-<./Figures/logo.png, id=31, 435.6275pt x 368.37625pt>
+<./Figures/logo.png, id=47, 435.6275pt x 368.37625pt>
 File: ./Figures/logo.png Graphic file (type png)
 <use ./Figures/logo.png>
 Package pdftex.def Info: ./Figures/logo.png  used on input line 41.
@@ -573,12 +573,12 @@ been already used, duplicate ignored
                    \relax 
 l.66 	\end{titlepage}
                       \newpage [1]
-<./Figures/food_data.png, id=48, 447.17062pt x 176.15813pt>
+<./Figures/food_data.png, id=64, 447.17062pt x 176.15813pt>
 File: ./Figures/food_data.png Graphic file (type png)
 <use ./Figures/food_data.png>
 Package pdftex.def Info: ./Figures/food_data.png  used on input line 75.
 (pdftex.def)             Requested size: 402.44983pt x 158.54083pt.
-<./Figures/pop_data.png, id=49, 523.9575pt x 115.18031pt>
+<./Figures/pop_data.png, id=65, 523.9575pt x 115.18031pt>
 File: ./Figures/pop_data.png Graphic file (type png)
 <use ./Figures/pop_data.png>
 Package pdftex.def Info: ./Figures/pop_data.png  used on input line 77.
@@ -590,7 +590,7 @@ been already used, duplicate ignored
 l.77 ...[scale=.8]{pop_data}	\end{center} \newpage
                                                    [1 <./Figures/food_data.png>
  <./Figures/pop_data.png>] [2] [3]
-<./Figures/top_20_c_yearly.jpg, id=67, 743.02594pt x 386.19281pt>
+<./Figures/top_20_c_yearly.jpg, id=83, 743.02594pt x 386.19281pt>
 File: ./Figures/top_20_c_yearly.jpg Graphic file (type jpg)
 <use ./Figures/top_20_c_yearly.jpg>
 Package pdftex.def Info: ./Figures/top_20_c_yearly.jpg  used on input line 106.
@@ -601,65 +601,182 @@ Overfull \hbox (6.895pt too wide) in paragraph at lines 106--106
  [] 
  []
 
-<./Figures/top_20_c_total.jpg, id=68, 678.28406pt x 283.81032pt>
+<./Figures/top_20_c_total.jpg, id=84, 678.28406pt x 283.81032pt>
 File: ./Figures/top_20_c_total.jpg Graphic file (type jpg)
 <use ./Figures/top_20_c_total.jpg>
 Package pdftex.def Info: ./Figures/top_20_c_total.jpg  used on input line 107.
 (pdftex.def)             Requested size: 393.40503pt x 164.61009pt.
 [4 <./Figures/top_20_c_yearly.jpg> <./Figures/top_20_c_total.jpg>]
-<./Figures/china_prod.jpg, id=73, 630.10406pt x 295.85532pt>
+<./Figures/china_prod.jpg, id=89, 630.10406pt x 295.85532pt>
 File: ./Figures/china_prod.jpg Graphic file (type jpg)
 <use ./Figures/china_prod.jpg>
 Package pdftex.def Info: ./Figures/china_prod.jpg  used on input line 118.
 (pdftex.def)             Requested size: 409.56279pt x 192.30367pt.
  [5 <./Figures/china_prod.jpg>]
-Underfull \hbox (badness 10000) in paragraph at lines 124--125
+<./Figures/food_feed.jpg, id=96, 652.68843pt x 313.9228pt>
+File: ./Figures/food_feed.jpg Graphic file (type jpg)
+<use ./Figures/food_feed.jpg>
+Package pdftex.def Info: ./Figures/food_feed.jpg  used on input line 127.
+(pdftex.def)             Requested size: 424.24246pt x 204.0474pt.
 
+Overfull \hbox (0.18213pt too wide) in paragraph at lines 127--128
+ [] 
  []
 
-[6]
-Overfull \hbox (17.1831pt too wide) in paragraph at lines 145--152
+<./Figures/yearly_feed.jpg, id=97, 738.50906pt x 383.18156pt>
+File: ./Figures/yearly_feed.jpg Graphic file (type jpg)
+<use ./Figures/yearly_feed.jpg>
+Package pdftex.def Info: ./Figures/yearly_feed.jpg  used on input line 131.
+(pdftex.def)             Requested size: 443.10886pt x 229.9107pt.
+
+Overfull \hbox (19.04852pt too wide) in paragraph at lines 131--132
+ [] 
+ []
+
+[6 <./Figures/food_feed.jpg> <./Figures/yearly_feed.jpg>]
+<./Figures/yearly_food.jpg, id=102, 746.03719pt x 386.19281pt>
+File: ./Figures/yearly_food.jpg Graphic file (type jpg)
+<use ./Figures/yearly_food.jpg>
+Package pdftex.def Info: ./Figures/yearly_food.jpg  used on input line 138.
+(pdftex.def)             Requested size: 447.62576pt x 231.71745pt.
+
+Overfull \hbox (23.56543pt too wide) in paragraph at lines 138--139
+ [] 
+ []
+
+[7 <./Figures/yearly_food.jpg>]
+<./Figures/prod_pop.jpg, id=107, 651.93562pt x 536.75531pt>
+File: ./Figures/prod_pop.jpg Graphic file (type jpg)
+<use ./Figures/prod_pop.jpg>
+Package pdftex.def Info: ./Figures/prod_pop.jpg  used on input line 150.
+(pdftex.def)             Requested size: 410.7216pt x 338.15762pt.
+ [8 <./Figures/prod_pop.jpg>]
+<./Figures/pop_change.jpg, id=112, 642.90187pt x 539.76656pt>
+File: ./Figures/pop_change.jpg Graphic file (type jpg)
+<use ./Figures/pop_change.jpg>
+Package pdftex.def Info: ./Figures/pop_change.jpg  used on input line 158.
+(pdftex.def)             Requested size: 417.88126pt x 350.8441pt.
+ [9 <./Figures/pop_change.jpg>]
+<./Figures/old_pop.jpg, id=117, 228.10219pt x 128.73094pt>
+File: ./Figures/old_pop.jpg Graphic file (type jpg)
+<use ./Figures/old_pop.jpg>
+Package pdftex.def Info: ./Figures/old_pop.jpg  used on input line 171.
+(pdftex.def)             Requested size: 159.67043pt x 90.11102pt.
+<./Figures/new_pop.jpg, id=118, 548.80031pt x 177.66376pt>
+File: ./Figures/new_pop.jpg Graphic file (type jpg)
+<use ./Figures/new_pop.jpg>
+Package pdftex.def Info: ./Figures/new_pop.jpg  used on input line 172.
+(pdftex.def)             Requested size: 384.15758pt x 124.36377pt.
+
+Overfull \hbox (34.81717pt too wide) in paragraph at lines 174--175
+\OT1/cmr/m/n/12 new for-mat-ted pop-u-la-tion dataset was out-putted to the fil
+e ``FAO[]POP[]REFORMAT.csv".
+ []
+
+[10 <./Figures/old_pop.jpg> <./Figures/new_pop.jpg>]
+<./Figures/linear_model.jpg, id=123, 718.18312pt x 386.19281pt>
+File: ./Figures/linear_model.jpg Graphic file (type jpg)
+<use ./Figures/linear_model.jpg>
+Package pdftex.def Info: ./Figures/linear_model.jpg  used on input line 184.
+(pdftex.def)             Requested size: 430.9132pt x 231.71745pt.
+
+Overfull \hbox (6.85286pt too wide) in paragraph at lines 184--185
+ [] 
+ []
+
+[11 <./Figures/linear_model.jpg>]
+<./Figures/model_info.jpg, id=129, 240.9pt x 100.12407pt>
+File: ./Figures/model_info.jpg Graphic file (type jpg)
+<use ./Figures/model_info.jpg>
+Package pdftex.def Info: ./Figures/model_info.jpg  used on input line 192.
+(pdftex.def)             Requested size: 204.76595pt x 85.10583pt.
+<./Figures/poly_model.jpg, id=130, 715.17188pt x 458.46281pt>
+File: ./Figures/poly_model.jpg Graphic file (type jpg)
+<use ./Figures/poly_model.jpg>
+Package pdftex.def Info: ./Figures/poly_model.jpg  used on input line 193.
+(pdftex.def)             Requested size: 436.2542pt x 279.6619pt.
+
+Overfull \hbox (12.19386pt too wide) in paragraph at lines 193--194
+ [][] 
+ []
+
+[12 <./Figures/model_info.jpg> <./Figures/poly_model.jpg>]
+<./Figures/prod_z.jpg, id=137, 588.69937pt x 145.29282pt>
+File: ./Figures/prod_z.jpg Graphic file (type jpg)
+<use ./Figures/prod_z.jpg>
+Package pdftex.def Info: ./Figures/prod_z.jpg  used on input line 204.
+(pdftex.def)             Requested size: 412.08675pt x 101.70427pt.
+<./Figures/cluster_score.jpg, id=138, 645.91313pt x 261.22594pt>
+File: ./Figures/cluster_score.jpg Graphic file (type jpg)
+<use ./Figures/cluster_score.jpg>
+Package pdftex.def Info: ./Figures/cluster_score.jpg  used on input line 208.
+(pdftex.def)             Requested size: 452.13611pt x 182.85689pt.
+
+Overfull \hbox (28.07578pt too wide) in paragraph at lines 208--209
+ [] 
+ []
+
+[13 <./Figures/prod_z.jpg> <./Figures/cluster_score.jpg>]
+<./Figures/kmeans.jpg, id=143, 532.99126pt x 289.83281pt>
+File: ./Figures/kmeans.jpg Graphic file (type jpg)
+<use ./Figures/kmeans.jpg>
+Package pdftex.def Info: ./Figures/kmeans.jpg  used on input line 216.
+(pdftex.def)             Requested size: 426.39359pt x 231.86655pt.
+
+Overfull \hbox (2.33325pt too wide) in paragraph at lines 216--217
+ [] 
+ []
+
+[14 <./Figures/kmeans.jpg>]
+Overfull \hbox (17.1831pt too wide) in paragraph at lines 234--241
 |  \OT1/cmr/m/it/12 Na-tional Ge-o-graphic\OT1/cmr/m/n/12 , www.nationalgeograp
 hic.com/foodfeatures/feeding-9-billion/. 
  []
 
 
-Overfull \hbox (24.63652pt too wide) in paragraph at lines 145--152
+Overfull \hbox (24.63652pt too wide) in paragraph at lines 234--241
 |  \OT1/cmr/m/n/12 scikit-learn.org/stable/auto[]examples/cluster/plot[]kmeans[
 ]silhouette[]analysis.html. 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 145--152
+Underfull \hbox (badness 10000) in paragraph at lines 234--241
 
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 156.
-[7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 156.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 245.
+[15]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 245.
  (final_report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 156.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 156.
-Package rerunfilecheck Info: File `final_report.out' has not changed.
-(rerunfilecheck)             Checksum: 61CA0934FC09A75D08CDF48C10DCFE04;390.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 156.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 245.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 245.
+
+
+Package rerunfilecheck Warning: File `final_report.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `final_report.out':
+(rerunfilecheck)             Before: C9CAE286581939F7AE3AC9B77D1D072B;639
+(rerunfilecheck)             After:  4D1C01F83969B8AD5C43A25AD81E73D5;682.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 245.
  ) 
 Here is how much of TeX's memory you used:
- 9657 strings out of 492484
- 138108 string characters out of 3131051
+ 9778 strings out of 492484
+ 140424 string characters out of 3131051
  248364 words of memory out of 3000000
- 13823 multiletter control sequences out of 15000+200000
+ 13931 multiletter control sequences out of 15000+200000
  16706 words of font info for 61 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,5n,37p,804b,446s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 39i,5n,37p,893b,476s stack positions out of 5000i,500n,10000p,200000b,50000s
 <D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><D:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><D:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><D:/Program Files/MiKTe
 X 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><D:/Program Files/MiKTeX 2.9/fon
 ts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on final_report.pdf (9 pages, 400138 bytes).
+Output written on final_report.pdf (17 pages, 1329693 bytes).
 PDF statistics:
- 111 PDF objects out of 1000 (max. 8388607)
- 15 named destinations out of 1000 (max. 500000)
- 87 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 178 PDF objects out of 1000 (max. 8388607)
+ 28 named destinations out of 1000 (max. 500000)
+ 184 words of extra memory for PDF output out of 10000 (max. 10000000)
 

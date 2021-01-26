@@ -4,4 +4,9 @@
 \contentsline {subsection}{\numberline {c.}Metrics}{3}{subsection.1.3}%
 \contentsline {section}{\numberline {II.}Analysis}{3}{section.2}%
 \contentsline {subsection}{\numberline {a.}Production Exploration}{4}{subsection.2.1}%
-\contentsline {section}{\numberline {III.}Resources}{7}{section.3}%
+\contentsline {subsection}{\numberline {b.}Population Exploration}{7}{subsection.2.2}%
+\contentsline {section}{\numberline {III.}Methodology}{10}{section.3}%
+\contentsline {subsection}{\numberline {a.}Data Preprocessing}{10}{subsection.3.1}%
+\contentsline {subsection}{\numberline {b.}Implementation}{11}{subsection.3.2}%
+\contentsline {section}{\numberline {IV.}Results}{14}{section.4}%
+\contentsline {section}{\numberline {V.}Resources}{15}{section.5}%
