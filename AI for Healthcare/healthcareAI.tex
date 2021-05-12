@@ -48,7 +48,7 @@
     showtabs=false,                  
     tabsize=2,
     morekeywords = {as},
-    keywordstyle = \color{black}
+    keywordstyle = \color{codegreen}
 }
 \lstset{style=Pystyle}
 \tcbset{
@@ -68,7 +68,94 @@
 	
 %%%% PAGE 1 %%%%
 	
-	\section{Applications to EHR Data}
+	\section{Applications to 2D Medical Imaging}
+	\subsection{Clinical Foundations of 2D Medical Imaging}
+	\begin{itemize}
+		\item \textbf{X-ray}: a 2D imaging technique that projects a type of radiation called x-rays down at the body from a single direction to capture a single image.
+		\item \textbf{Ultrasound}: a 2D imaging technique that uses high-frequency sound waves to generate images.
+		\item \textbf{Computed Tomography (CT)}: a 3D imaging technique that emits x-rays from many different angles around the human body to capture more detail from more different angles.
+		\item \textbf{Magnetic Resonance Imaging (MRI)}: a 3D imaging technique that uses strong magnetic fields and radio waves to create images of areas of the body from all different angles.
+		\item \textbf{2D imaging}: an imaging technique that pictures are taken from a single angle.
+		\item \textbf{3D imaging}: an imaging technique that pictures are taken from different angles to create a volume of images.
+	\end{itemize}
+	\textbf{X-rays} can show us different absorption levels by the following: bone has high absorption (\textit{bright white}), soft tissue has medium absorption (\textit{gray}), and air has low absorption (\textit{dark}). Chest x-rays for detecting \textbf{pneumonia} will be filled with infiltrates (which are denser with air) and appear as lighter shading in x-rays of lungs. X-rays are stored as single-channel grayscale images and in DICOM format. \vspace*{3mm}\\
+	\textbf{PACS} (Picture Archiving and Communication System) are used for storing and accessing images from different areas. \textbf{Diagnostic imaging} occurs when Clinician believes something \textit{may} be wrong with a patient and needs an image to verify (i.e. brain tumors). \textbf{Screening imaging} occurs when nothing actually wrong with patient, but patient is in risk group for disease and need regular imaging to monitor.\vspace*{2mm}\\
+	We want to prioritize the most urgent images for radiologists to read based on the probabilities of their being a life threatening finding on these images (between two diseases, we want to read the max first). \vspace*{1mm}
+	\begin{lstlisting}
+	worklist = pd.read_csv('probabilities.csv')
+	worklist['time_to_read'] = np.arange(6, 6*(len(worklist)+1), 6)
+	worklist['max_prob'] = worklist.iloc[:, 1:3].max(axis=1)
+	worklist.sort_values(by='max_prob', ascending=False, inplace=True)
+	worklist['time_to_read_max'] = np.arange(6, 6*(len(worklist)+1), 6)
+	worklist['time_delta'] = worklist['time_to_read'] - worklist['time_to_read_max']
+	# Check to see how well algorithm had brain bleeds read 30 mins faster
+	worklist[(worklist.time_delta > 30) & (worklist.Image_Type == 'head_ct')]
+	# Check to see how well algorithm had aortic dissections read 15 mins faster
+	worklist[(worklist.time_delta > 15) & (worklist.Image_Type == 'chest_xray')] \end{lstlisting}
+	\begin{itemize}
+		\item We find the initial time that each image will be read based on a 6 minute read time.
+		\item We then order the images based on the max probability between the image types and sort them.
+		\item We then find the new read times and find the change in times between that and the original.
+		\item We can then check to see how our times improved. 14 head CTs that were read more than 30 minutes faster than their original order. 28 chest x-rays that were read more than 15 minutes faster than their original order.
+	\end{itemize}
+	\textbf{Sensitivity} measures the proportion of accurately-identified \textit{positive} cases, also called \textit{recall}, and is found by $\frac{TP}{TP + FN}$. \textbf{High Sensitivity Tests} are good for ruling out diseases (if 100\% accuracy then it can find all patients with the disease) and is reliable when the result is negative (rarely misdiagnose people who have disease). \textbf{Specificity} measures the proportion of accurately-identified \textit{negative} cases, and is found by $\frac{TN}{TN+FP}$. \textbf{Highly Specific Tests} are good for ruling in disease (if 100\% accuracy then it can find all patients without the disease) and is reliable when the result is positive (rarely misdiagnose people who don't have disease). \newpage
+	
+%%%% PAGE 2 %%%%
+	
+	\noindent To evaluate a segmentation/localization algorithm, we look at the overlap between our algorithm segment ($X$) and radiologist segment ($Y$), and finding the overlap between the two. This can be found by the \textbf{Dice Coefficient}, which is $Dice(X,Y) = \frac{2* |X \cap Y|}{|X| + |Y|}$ 
+	
+	\subsection{2D Medical Imaging Exploratory Data Analysis}
+	\textbf{DICOM} (Digital Imaging and Communications in Medicine) is the standard for the communication and management of medical imaging information and related data. This allows for \textit{interoperability}, which means images from one hospital can be read from any other hospital. A \textbf{series} refers to a single 2D image, and a \textbf{study} is comprised of all image series for the patient. The file contains:
+	\begin{itemize}
+		\item Header - contains all attributes about an image except the pixel data. This includes information on the patient (name, ID, etc.), the study (date, time, etc.), and the series (number, type, etc.).
+		\item Image - contains the pixel data.
+	\end{itemize}
+	\textbf{Radiologist Report} is not part of the DICOM, but is stored in the PACS and EMR, which tell us details such as location, area of interest, findings, and impression (summary). \vspace*{3mm}\\
+	Using the \textbf{pydicom} package, we can read these files and extract the image pixel data from within. We may also want to explore the intensity profiles of these images by plotting histograms. \vspace*{1mm}
+	\begin{lstlisting}
+	bbox = pd.read_csv('bounding_boxes.csv') # bounding box locations
+	dicom1 = pydicom.dcmread('dicom_00013659_019.dcm') # read single dicom series
+	dicom1_pdata = dicom1.pixel_array # get pixel data
+	plt.imshow(dicom1_pdata, cmap='gray') # see image
+	plt.hist(dicom1_pdata.ravel(), bins = 256); # intensity
+	
+	new_img = dicom1_pdata.copy() # Normalize Image
+	new_img = (new_img - np.mean(dicom1_pdata))/np.std(dicom1_pdata)\end{lstlisting} \vspace*{1mm}
+	When preparing \textbf{DICOM Headers} to be used in training, we want fast access by pre-extracting all data from DICOM headers into a dataframe. The key attributes are:
+	\begin{itemize}
+		\item Patient ID - be sure not to include same patient in both train and test set.
+		\item Patient's Sex - be sure to have equal male/female proportions in train and test set.
+		\item Patient's Age - be sure to have equal age distributions in train and test set.
+		\item Study \& Series Instance UID - make sure we don't overtrain on same study or series.
+	\end{itemize}
+	\begin{lstlisting}
+	mydicoms = glob.glob("*.dcm") # gather all dicom files names
+	all_data = []
+	
+	for dicom in mydicoms: # read dicom and save relevant information
+		dicom_tmp = pydicom.dcmread(dicom)
+		fields = [dicom_tmp.PatientID, dicom_tmp.PatientAge, dicom_tmp.PatientSex, 
+		          dicom_tmp.Modality, dicom_tmp.StudyDescription, dicom_tmp.Rows, 
+		          dicom_tmp.Columns]
+		all_data.append(fields)
+		
+	mydata = pd.DataFrame(all_data, # create new dataframe with header info
+	                      columns = ['PatientID','PatientAge','PatientSex',
+	                                 'Modality','Findings','Rows','Columns']) \end{lstlisting}
+   	\begin{itemize}
+   		\item \textbf{Image artifact}: An object or distortion in an image that reduces its quality
+   		\item \textbf{Foreign body}: An object in a medical image that is not biological material from the patient, such as a pacemaker or wire.
+   		\item \textbf{Intensity profile}: the distribution of all pixels' intensity values that comprise an image
+   	\end{itemize} \newpage
+
+%%%% PAGE 3 %%%%
+
+	\subsection{Classification Models of 2D Medical Images}
+	
+	
+	
+	
+	
 	
 	
 	
