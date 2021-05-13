@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.3) (preloaded format=pdflatex 2021.5.5)  12 MAY 2021 08:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.3) (preloaded format=pdflatex 2021.5.5)  13 MAY 2021 08:39
 entering extended mode
 **./healthcareAI.tex
 (healthcareAI.tex
@@ -807,16 +807,22 @@ ng (ext4): destination with the same identifier (name{page.1}) has been already
 <to be read again> 
                    \relax 
 l.101 ... people who don't have disease). \newpage
-                                                   [1] [2] [3]
+                                                   [1] [2] [3] [4]
 (healthcareAI.aux)
-Package rerunfilecheck Info: File `healthcareAI.out' has not changed.
-(rerunfilecheck)             Checksum: 6905FE10DCD5433D2C65DC243962E8DD;1081.
+
+Package rerunfilecheck Warning: File `healthcareAI.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `healthcareAI.out':
+(rerunfilecheck)             Before: 0A37CBA1D721F0417277796DA4A2D267;1153
+(rerunfilecheck)             After:  BAB0A86BE8FC39671CD3B533428800EA;1452.
  ) 
 Here is how much of TeX's memory you used:
- 22044 strings out of 479252
- 382116 string characters out of 2863601
- 1060779 words of memory out of 3000000
- 39163 multiletter control sequences out of 15000+600000
+ 22147 strings out of 479252
+ 383522 string characters out of 2863601
+ 1154779 words of memory out of 3000000
+ 39204 multiletter control sequences out of 15000+600000
  413986 words of font info for 65 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  112i,5n,116p,810b,1291s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -831,9 +837,9 @@ onts/type1/public/amsfonts/cm/cmr6.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1
 sfonts/cm/cmsy8.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
 /cmti10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt9.p
 fb>
-Output written on healthcareAI.pdf (4 pages, 149623 bytes).
+Output written on healthcareAI.pdf (5 pages, 167644 bytes).
 PDF statistics:
- 134 PDF objects out of 1000 (max. 8388607)
- 42 named destinations out of 1000 (max. 500000)
- 45 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 215 PDF objects out of 1000 (max. 8388607)
+ 104 named destinations out of 1000 (max. 500000)
+ 53 words of extra memory for PDF output out of 10000 (max. 10000000)
 

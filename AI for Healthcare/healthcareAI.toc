@@ -2,3 +2,4 @@
 \contentsline {subsection}{\numberline {1.1}Clinical Foundations of 2D Medical Imaging}{1}{subsection.1.1}%
 \contentsline {subsection}{\numberline {1.2}2D Medical Imaging Exploratory Data Analysis}{2}{subsection.1.2}%
 \contentsline {subsection}{\numberline {1.3}Classification Models of 2D Medical Images}{3}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Translating Algorithm into a Clinical Setting with the FDA}{4}{subsection.1.4}%

@@ -151,7 +151,82 @@
 %%%% PAGE 3 %%%%
 
 	\subsection{Classification Models of 2D Medical Images}
+	\textbf{Otsu's Method} is often used for background extraction and classification. It takes the intensity distribution of an image and searches it to find the intensity threshold that minimizes the variance in each of the two classes. Once it discovers that threshold, it considers every pixel on one side of that image to be one class and on the other side to be another class. We can then take the modes (peaks) for both classes, and identify the new image class by seeing which mode it is closest to. \vspace*{3mm}\\
+	Below, we implement this algorithm and use it to extract the image intensity distributions for two types of breasts: fatty and dense. These are standard classifications of breast tissue that radiologists make for all mammography studies. We then use image intensity to classify images into one of the two classes. Using a threshold, we are able to look at pixel intensity values only for the tissue (exclude background).\vspace*{1mm}
+	\begin{lstlisting}
+	# Use a threshold to separate the image background to create new binarized images
+	thresh = 50
+	fatty_imgs = glob.glob("fatty/*")
+	dense_imgs = glob.glob("dense/*")
+	fatty_intensities = []
+	dense_intensities = []
 	
+	for i in fatty_imgs: 
+		img = plt.imread(i)
+		img_mask = (img > thresh)
+		fatty_intensities.extend(img[img_mask].tolist())
+	
+	for i in dense_imgs: 
+		img = plt.imread(i)
+		img_mask = (img > thresh)
+		dense_intensities.extend(img[img_mask].tolist())
+		
+	dense_mode = scipy.stats.mode(dense_intensities)[0][0] # 176
+	fatty_mode = scipy.stats.mode(fatty_intensities)[0][0] # 140
+	
+	for i in dense_imgs: 
+		img = plt.imread(i)
+		img_mask = (img > thresh)
+		img_mode = scipy.stats.mode(img[img_mask])[0][0]
+		fatty_delta = img_mode - fatty_mode
+		dense_delta = img_mode - dense_mode
+		print('Fatty') if (np.abs(fatty_delta) < np.abs(dense_delta)) else print("Dense")\end{lstlisting}\vspace*{1mm}
+	We often want out data for training and testing to follow the same distributions, as well as minimize the class imbalances found within training data. We can do this be random under sampling to balance out the classes. In the following example, we will want even class balance for training set, but we want only 20\% of the testing data to be positive and 80\% to be negative. \vspace*{1mm}
+	\begin{lstlisting}
+	d = pd.read_csv('findings_data_5000.csv')
+	train_df, valid_df = train_test_split(d, test_size=0.2, stratify = d['Pneumothorax'])
+	train_df['Pneumothorax'].sum()/len(train_df) # 0.044 (unequal class balance)
+	valid_df['Pneumothorax'].sum()/len(valid_df) # 0.044 (unequal class balance)
+	
+	p_ind = train_df[train_df.Pneumothorax==1].index.tolist()
+	np_ind = train_df[train_df.Pneumothorax==0].index.tolist()
+	np_sample = sample(np_ind, len(p_ind))
+	train_df = train_df.loc[p_ind + np_sample]
+	train_df['Pneumothorax'].sum()/len(train_df) # 0.5 (equal class balance)
+	
+	p_ind = valid_df[valid_df.Pneumothorax==1].index.tolist()
+	np_ind = valid_df[valid_df.Pneumothorax==0].index.tolist()
+	np_sample = sample(np_ind, 4*len(p_ind))
+	valid_df = valid_df.loc[p_ind + np_sample]
+	valid_df['Pneumothorax'].sum()/len(valid_df) # 0.2 (20/80 ratio) \end{lstlisting} \newpage
+
+%%%% PAGE 4 %%%%
+
+	\noindent The \textbf{gold standard} is the method that detects the disease with the highest sensitivity and accuracy. Any new method can then be compared to this. For example, the gold standard for pneumonia detection is a biopsy (but takes a long time) so they rely on the radiologists suggestion to start treatment and then verify with the biopsy later. Often times, the gold standard is unattainable for an algorithm developer. So, you still need to establish the \textbf{ground truth} to compare your algorithm. Typically sources for these ground truth are:
+	\begin{itemize}
+		\item Biopsy-based labeling. Limitations: difficult and expensive to obtain (outside of PACS).
+		\item NLP extraction from radiology reports. Limitations: may not be accurate.
+		\item Expert (radiologist) labeling. Limitations: expensive and requires a lot of time to come up with labeling protocols.
+		\item Labeling by another state-of-the-art algorithm. Limitations: may not be accurate.
+	\end{itemize}
+	The \textbf{silver standard} involves hiring several radiologists to each make their own diagnosis of an image. The final diagnosis is then determined by a voting system across all of the radiologists' labels for each image. Note, sometimes radiologists' experience levels are taken into account and votes are weighted by years of experience. \vspace*{1mm}
+	\begin{lstlisting}
+	labels = pd.read_csv('labels.csv')
+	labels = labels.replace('benign',1).replace('cancer',0)
+	
+	gt1 = labels['biopsy'] # biopsy labels
+	gt2 = labels.iloc[:, 0:3].mode(axis=1) # voting system (equal weight)
+	
+	weighted_labels = 0.33*labels['rad1'] + 0.67*labels['rad2'] + labels['rad3']
+	gt3 = [1 if x > 1 else 0 for x in weighted_labels] # voting system (weighted)
+	
+	biopsy_to_votes = (gt1 == gt2)
+	len(biopsy_to_votes[biopsy_to_votes==False]) # 9 mislabled
+	
+	biopsy_to_votes = (gt1 == gt3)
+	len(biopsy_to_votes[biopsy_to_votes==False]) # 15 mislabled	\end{lstlisting} \vspace*{1mm}
+	
+	\subsection{Translating Algorithm into a Clinical Setting with the FDA}
 	
 	
 	
