@@ -206,7 +206,7 @@
 	\begin{itemize}
 		\item Biopsy-based labeling. Limitations: difficult and expensive to obtain (outside of PACS).
 		\item NLP extraction from radiology reports. Limitations: may not be accurate.
-		\item Expert (radiologist) labeling. Limitations: expensive and requires a lot of time to come up with labeling protocols.
+		\item Expert (radiologist) labeling. Limitations: expensive and a lot of time to come up with protocols.
 		\item Labeling by another state-of-the-art algorithm. Limitations: may not be accurate.
 	\end{itemize}
 	The \textbf{silver standard} involves hiring several radiologists to each make their own diagnosis of an image. The final diagnosis is then determined by a voting system across all of the radiologists' labels for each image. Note, sometimes radiologists' experience levels are taken into account and votes are weighted by years of experience. \vspace*{1mm}
@@ -227,8 +227,47 @@
 	len(biopsy_to_votes[biopsy_to_votes==False]) # 15 mislabled	\end{lstlisting} \vspace*{1mm}
 	
 	\subsection{Translating Algorithm into a Clinical Setting with the FDA}
+	There are 3 \textbf{Risk Categories} for the FDA for new medical devices:
+	\begin{itemize}
+		\item \textbf{Class I} - not intended for use in supporting/sustaining life or preventing impairment to human health (also can't present potential risk of illness/injury). This is the most common (47\% of devices), pose the lowest risk, and require the fewest regulatory requirements (exempt or 510(k)). 
+		\item \textbf{Class II} - devices which require substantial equivalence to a predicate to prove safety/effectiveness of the device. Most common route that AI programs go through, are considered medium risk, and have more regulatory requirements (exempt or 510(k)).
+		\item \textbf{Class III} - devices that sustain/support life, are implanted, or present potential unreasonable risk of illness/injury. Only 10\% of devices fall into this category, are considered high risk, and have the highest regulatory requirements (510(k) or PMA).
+	\end{itemize}
+	The \textbf{Intended Use} ties directly to your risk category. For example, a 2D medical imagining algorithm to detect breast cancer from a mammogram would be Class III, since a missed diagnosis could be fatal. If predicate device exists we follow the 510(k), but since there is none, we would have to follow the PMA route. If instead our algorithm was used to \textit{assist the radiologist} in the detection of breast abnormalities on mammograms, this is considered a \textit{Computer-Assisted Diagnosis (CADx)} and the FDA assumes the radiologists will depend heavily on this, it will still be Class III. \vspace*{3mm}\\
+	The \textbf{Indications for Use} describe conditions for use of the device and make more specific suggestions about how your algorithm could be used. Indications for use statement describes precise situations and reasons where and why you would use this device. For our mammogram algorithm this could be describing it is used for screening mammography studies, the age range, and with no prior history of breast cancer. \newpage
 	
+%%%% PAGE 5 %%%%
+
+	\noindent When the FDA talks about \textbf{algorithm limitations}, they want to know more about scenarios where your algorithm is not safe and effective to use. In other words, they want to know where our algorithm will fail. This could be things such as poor performance for patients with prior disease history. \vspace*{3mm}\\
+	After your algorithm is cleared by the FDA and released, the FDA has a system called \textbf{Medical Device Reporting} to continuously monitor. Any time one of your end-users discovers a malfunction in your software, they report this back to you, the manufacturer, and you are required to report it back to the FDA. Depending on the severity of the malfunction, and whether or not it is life-threatening, the FDA will either completely recall your device or require you to update its labeling and explicitly state new limitations that have been encountered. \vspace*{3mm}\\
+	If your algorithm needs to work in an emergency workflow, you need to consider \textbf{computational limitations} and inform the FDA that the algorithm does not achieve fast performance in the absence of certain types of computational infrastructure. This would let your end consumers know if the device is right for them. \vspace*{1mm}
+	\begin{lstlisting}
+	def sens_spec(tp, fp, tn, fn):
+		sens = tp/(tp+fn)
+		spec = tn/(tn+fp)
+		return sens, spec
 	
+	tn, fp, fn, tp = confusion_matrix(data.iloc[:, 0], data.iloc[:, -1],
+	                                  labels=[0,1]).ravel()
+	sens_spec(tp, fp, tn, fn) # (0.8166666666666667, 0.8235294117647058)
+	
+	for i in data.columns[1:-1].tolist():
+		tn, fp, fn, tp = confusion_matrix(data[data[i]==1].Pneumonia.values,
+		                                  data[data[i]==1].algorithm_output.values,
+		                                  labels=[0,1]).ravel()
+		sens_spec(tp, fp, tn, fn)
+		print(f'{i}\nSensitivity: {sens}\nSpecificity: {spec}\n') \end{lstlisting}
+	\begin{itemize}
+		\item The results indicate that the presence of infiltrations in a chest x-ray is a limitation of this algorithm, and that it performs very poorly on the accurate detection of pneumonia in the presence of infiltration. The presence of nodules and pneumothorax have a slight impact on the algorithm's sensitivity and may reduce the ability to detect pneumonia, while the presence of effusion has a slight impact on specificity and may increase the number of false positive pneumonia classifications.
+	\end{itemize}
+	\textbf{Precision} is optimized when we care most for confidence in positive results, but does not take FN into account (so they are beneficial when you want to \textit{confirm} a diagnosis). \textbf{Recall} is optimized for most confident when the test is negative, but does not take FP into account (beneficial for making sure someone \textit{does not} have a disease). \vspace*{3mm}\\
+	The \textbf{Threshold} is the cut-off probability value from which we determine what class a predicted value belongs to, and we change this value depending on which performance metrics we want to maximize. We can asses the trade-off across all threshold values by using a \textbf{Precision-Recall Curve}. We can also use the \textbf{F1 Score} for binary classification to find the mean of precision and recall (balances the two metrics and is used as a final evaluation of model). \vspace*{3mm}\\
+	You'll need to perform a standalone clinical assessment of your tool that uses an \textbf{FDA validation se}t from a real-world \textit{clinical setting} to prove to the FDA that your algorithm works. You will run this FDA validation set through your algorithm just ONCE. You need to identify a clinical partner to gather the FDA validation set. First, you need to describe who you want the data from. Second, you need to specify what types of images you’re looking for. You need to gather the \textbf{ground truth} that can be used to compare the model output tested on the FDA validation set. The choice of your ground truth method ties back to your intended use statement (biopsy for diagnosis, radiologist read for CADx tool). For your validation plan, you need evidence to support your reasoning. As a result, you need a \textbf{performance standard} (pull from literature reports). For example, if the literature have F1 scores you could say your model needs an F1 equivalent to the mean of all those scores. You may also need to include assessment time for the algorithm (speed for emergency use). \newpage
+	
+%%%% PAGE 6 %%%%
+
+	\section{Applications to 3D Medical Imaging}
+	\subsection{Clinical Fundamentals}
 	
 	
 	
